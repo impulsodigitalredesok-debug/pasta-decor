@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pasta Décor - Tienda Online Repostería</title>
+    <title>Pasta Decor - Tienda Online Repostería</title>
     <!-- Tailwind CSS para diseño moderno -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -13,14 +13,17 @@
     <header class="bg-slate-900 text-white sticky top-0 z-30 shadow-md">
         <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="bg-pink-500 p-2 rounded-xl text-white font-bold text-xl">🎂</div>
+                
                 <div>
-                    <h1 class="text-lg font-bold tracking-tight">Pasta Décor Repostería</h1>
-                    <p class="text-xs text-slate-400">Catálogo Oficial Junín</p>
+                    <h1 class="text-lg font-bold tracking-tight">Pasta Decor</h1>
+                    
                 </div>
             </div>
 
             <div class="flex items-center space-x-3">
+                <!-- Sincronizador en vivo -->
+                <span id="sync-status" class="text-[10px] bg-emerald-900 text-emerald-300 px-2.5 py-1 rounded-full font-bold hidden sm:inline-block">☁️ Sincronizado</span>
+
                 <!-- Botón Admin -->
                 <button onclick="openAdminModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3.5 py-2 rounded-xl border border-slate-700 flex items-center gap-1.5 transition cursor-pointer">
                     <span>⚙️ Admin</span>
@@ -198,9 +201,10 @@
 
             <!-- TAB 1: CONTROL DE STOCK Y PRECIOS -->
             <div id="admin-tab-stock">
-                <div class="mb-4 flex justify-end">
-                    <button onclick="exportHTMLFile()" class="bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1.5">
-                        <span>💾 Descargar index.html con Precios Actualizados</span>
+                <div class="mb-4 flex justify-between items-center">
+                    <span id="github-sync-indicator" class="text-xs text-slate-500 font-medium">🔄 Sincronización automática con GitHub activa</span>
+                    <button onclick="syncToGitHub()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1.5">
+                        <span>☁️ Forzar Sincronización con GitHub</span>
                     </button>
                 </div>
                 <div class="overflow-x-auto">
@@ -302,9 +306,14 @@
         </div>
     </div>
 
-    <!-- SCRIPT DE FUNCIONAMIENTO COMPLETO -->
+    <!-- SCRIPT DE FUNCIONAMIENTO CON CONEXIÓN DIRECTA A GITHUB -->
     <script>
         const ADMIN_PASSWORD = "8266";
+
+        // CREDENCIALES DE GITHUB INTEGRADAS
+        const GH_USER = "impulsodigitalredesok-debug";
+        const GH_REPO = "pasta-decor";
+        const GH_TOKEN = "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";
 
         // PRODUCTOS DE FABRICA CON NOMBRES DE FOTOS LOCALES
         const defaultProducts = [
@@ -337,20 +346,61 @@
             localStorage.setItem('store_products', JSON.stringify(products));
             localStorage.setItem('store_sales', JSON.stringify(sales));
             localStorage.setItem('store_movements', JSON.stringify(movements));
+            syncToGitHub(); // Sincroniza automáticamente en segundo plano a la nube
         }
 
-        // --- EXPORTAR CÓDIGO CON PRECIOS ---
-        function exportHTMLFile() {
-            let fullSource = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
-            let newDefaultStr = "const defaultProducts = " + JSON.stringify(products, null, 12) + ";";
-            fullSource = fullSource.replace(/const defaultProducts = \[[\s\S]*?\];/, newDefaultStr);
+        // --- SINCRONIZACIÓN AUTOMÁTICA CON GITHUB ---
+        async function syncToGitHub() {
+            const indicator = document.getElementById('sync-status');
+            if (indicator) {
+                indicator.innerText = "☁️ Sincronizando...";
+                indicator.className = "text-[10px] bg-amber-900 text-amber-300 px-2.5 py-1 rounded-full font-bold inline-block";
+            }
 
-            const blob = new Blob([fullSource], { type: "text/html" });
-            const a = document.createElement("a");
-            a.href = URL.createObjectURL(blob);
-            a.download = "index.html";
-            a.click();
-            alert("Se descargó el archivo index.html actualizado.");
+            try {
+                let fullSource = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+                let newDefaultStr = "const defaultProducts = " + JSON.stringify(products, null, 12) + ";";
+                fullSource = fullSource.replace(/const defaultProducts = \[[\s\S]*?\];/, newDefaultStr);
+
+                const base64Content = btoa(unescape(encodeURIComponent(fullSource)));
+                const apiUrl = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/index.html`;
+
+                // 1. Obtener el SHA actual del archivo en GitHub
+                const getRes = await fetch(apiUrl, {
+                    headers: { 'Authorization': `token ${GH_TOKEN}` }
+                });
+                const fileData = await getRes.json();
+                const sha = fileData.sha;
+
+                // 2. Hacer commit de actualización
+                const putRes = await fetch(apiUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GH_TOKEN}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: "Actualización automática de stock y precios desde Admin",
+                        content: base64Content,
+                        sha: sha
+                    })
+                });
+
+                if (putRes.ok) {
+                    if (indicator) {
+                        indicator.innerText = "☁️ Sincronizado en la Nube";
+                        indicator.className = "text-[10px] bg-emerald-900 text-emerald-300 px-2.5 py-1 rounded-full font-bold inline-block";
+                    }
+                } else {
+                    throw new Error("Error al guardar en GitHub");
+                }
+            } catch (err) {
+                console.error("Error de sincronización:", err);
+                if (indicator) {
+                    indicator.innerText = "⚠️ Error de Sincro";
+                    indicator.className = "text-[10px] bg-rose-900 text-rose-300 px-2.5 py-1 rounded-full font-bold inline-block";
+                }
+            }
         }
 
         // --- COPIAR TEXTO AL PORTAPAPELES ---
