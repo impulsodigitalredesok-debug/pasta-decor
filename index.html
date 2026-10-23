@@ -13,7 +13,7 @@
     <header class="bg-slate-900 text-white sticky top-0 z-30 shadow-md">
         <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="bg-pink-500 p-2 rounded-xl text-white font-bold text-xl">🎂</div>
+                <div class="bg-pink-500 p-2 rounded-xl text-white font-bold text-xl">✨</div>
                 <div>
                     <h1 class="text-lg font-bold tracking-tight">Pasta Décor Repostería</h1>
                     <p class="text-xs text-slate-400">Catálogo Oficial Junín</p>
@@ -21,10 +21,10 @@
             </div>
 
             <div class="flex items-center space-x-3">
-                <span id="sync-status" class="text-[10px] bg-emerald-900 text-emerald-300 px-2.5 py-1 rounded-full font-bold hidden sm:inline-block">☁️ Sincronizado</span>
+                <span id="sync-status" class="text-[10px] bg-emerald-900 text-emerald-300 px-2.5 py-1 rounded-full font-bold hidden sm:inline-block">🟢 Conectado</span>
 
                 <button onclick="openAdminModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3.5 py-2 rounded-xl border border-slate-700 flex items-center gap-1.5 transition cursor-pointer">
-                    <span>⚙️ Admin</span>
+                    <span>⚙ Admin</span>
                 </button>
 
                 <button onclick="toggleCart()" class="relative bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl flex items-center gap-2 font-medium transition shadow-sm cursor-pointer">
@@ -110,10 +110,24 @@
                     </div>
                 </div>
 
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl transition shadow cursor-pointer flex items-center justify-center gap-2 text-sm">
-                    <span>💬 Enviar Pedido por WhatsApp</span>
+                <button type="submit" id="btn-confirm-order" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl transition shadow cursor-pointer flex items-center justify-center gap-2 text-sm">
+                    <span>CONFIRMAR PEDIDO Y ENVIAR POR WHATSAPP</span>
                 </button>
             </form>
+        </div>
+    </div>
+
+    <!-- MODAL REDIRECCIÓN WHATSAPP CON CONTEO REGRESIVO -->
+    <div id="redirect-modal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl space-y-4">
+            <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl mx-auto">
+                💬
+            </div>
+            <h3 class="text-xl font-bold text-slate-900">¡Pedido Registrado!</h3>
+            <p class="text-slate-600 text-sm">Serás redirigido automáticamente a WhatsApp para enviar el pedido en <span id="countdown-num" class="font-bold text-emerald-600 text-lg">3</span> segundos...</p>
+            <div class="pt-2">
+                <a id="manual-wa-link" target="_blank" class="block w-full bg-emerald-600 text-white font-bold py-2.5 rounded-xl text-xs hover:bg-emerald-500 transition">Ir a WhatsApp ahora</a>
+            </div>
         </div>
     </div>
 
@@ -125,15 +139,15 @@
             <!-- RESUMEN EJECUTIVO -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6 border-b border-slate-200 pb-4">
                 <div class="bg-emerald-50 border border-emerald-200 p-3.5 rounded-2xl">
-                    <span class="text-[11px] text-emerald-700 font-medium block">Cobrado Neto</span>
+                    <span class="text-[11px] text-emerald-700 font-medium block">Total Recaudado</span>
                     <span id="admin-total-revenue" class="text-lg font-black text-emerald-700">$0</span>
                 </div>
                 <div class="bg-amber-50 border border-amber-200 p-3.5 rounded-2xl">
-                    <span class="text-[11px] text-amber-700 font-medium block">Pend. Cobro</span>
+                    <span class="text-[11px] text-amber-700 font-medium block">Pendiente Cobro</span>
                     <span id="admin-pending-payment-val" class="text-lg font-black text-amber-700">$0</span>
                 </div>
                 <div class="bg-sky-50 border border-sky-200 p-3.5 rounded-2xl">
-                    <span class="text-[11px] text-sky-700 font-medium block">Pend. Entrega</span>
+                    <span class="text-[11px] text-sky-700 font-medium block">Pendiente Entrega</span>
                     <span id="admin-pending-delivery-count" class="text-lg font-black text-sky-700">0</span>
                 </div>
                 <div class="bg-purple-50 border border-purple-200 p-3.5 rounded-2xl">
@@ -145,7 +159,7 @@
             <!-- PESTAÑAS ADMIN -->
             <div class="flex border-b border-slate-200 mb-6 gap-4">
                 <button onclick="switchAdminTab('sales')" id="tab-btn-sales" class="pb-2 font-bold text-sm border-b-2 border-emerald-600 text-emerald-600 cursor-pointer">
-                    📋 Pedidos & Estado
+                    📋 Pedidos y Estados
                 </button>
                 <button onclick="switchAdminTab('stock')" id="tab-btn-stock" class="pb-2 font-bold text-sm text-slate-400 hover:text-slate-700 cursor-pointer">
                     📦 Stock y Precios
@@ -155,20 +169,15 @@
                 </button>
             </div>
 
-            <!-- TAB 1: PEDIDOS Y ESTADOS DETALLADOS -->
+            <!-- TAB 1: PEDIDOS -->
             <div id="admin-tab-sales" class="space-y-4">
-                <!-- SUB-FILTROS DE ESTADO -->
                 <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200">
                     <div class="flex flex-wrap gap-1.5">
                         <button onclick="filterSalesStatus('todos')" id="sfilter-todos" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white cursor-pointer">Todos</button>
                         <button onclick="filterSalesStatus('p_entrega')" id="sfilter-p_entrega" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 cursor-pointer">🚚 Pend. Entrega</button>
                         <button onclick="filterSalesStatus('p_cobro')" id="sfilter-p_cobro" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 cursor-pointer">⏳ Pend. Cobro</button>
-                        <button onclick="filterSalesStatus('completado')" id="sfilter-completado" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 cursor-pointer">✓ Completados</button>
+                        <button onclick="filterSalesStatus('completado')" id="sfilter-completado" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 cursor-pointer">✔ Completados</button>
                     </div>
-                    
-                    <button onclick="syncToGitHub()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3.5 py-1.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1">
-                        <span>☁️ Sincronizar</span>
-                    </button>
                 </div>
 
                 <div class="overflow-x-auto">
@@ -187,7 +196,6 @@
                     </table>
                 </div>
 
-                <!-- MOVIMIENTO MANUAL CAJA -->
                 <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl mt-6">
                     <h4 class="font-bold text-xs text-slate-700 uppercase mb-3">Registrar Gasto o Ingreso Manual</h4>
                     <form onsubmit="addCashMovement(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
@@ -259,7 +267,7 @@
             </div>
 
             <div class="mt-8 pt-4 border-t border-slate-100 flex justify-between items-center text-xs">
-                <button onclick="resetAllData()" class="text-rose-500 hover:underline cursor-pointer">⚠️ Restaurar de Fábrica</button>
+                <button onclick="resetAllData()" class="text-rose-500 hover:underline cursor-pointer">⚠️ Restaurar Valores de Fábrica</button>
                 <button onclick="closeAdminModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold px-4 py-2 rounded-xl cursor-pointer">Cerrar</button>
             </div>
         </div>
@@ -268,9 +276,9 @@
     <!-- SCRIPT PRINCIPAL -->
     <script>
         const ADMIN_PASSWORD = "8266";
-        const GH_USER = "impulsodigitalredesok-debug";
-        const GH_REPO = "pasta-decor";
-        const GH_TOKEN = "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";
+        
+        // URL de tu Google Apps Script
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxVJ_c32fkrurA4QJhgwBVjlnGgJLgQofSOg2vkWb9Nq8PwUx1pvyIYxEyVxJBqVNjhgw/exec";
 
         const defaultProducts = [
             { id: 1, name: "Balde 5kg Súper Blanco", price: 39000, stock: 10, category: "balde", desc: "Pasta Décor para forrado de gran volumen.", image: "balde.jpg" },
@@ -290,78 +298,54 @@
             { id: 15, name: "Paquete 500g Color ROSA", price: 4900, stock: 8, category: "color", desc: "Rosa.", image: "rosa.jpg" }
         ];
 
-        let products = JSON.parse(localStorage.getItem('store_products')) || defaultProducts;
-        let sales = JSON.parse(localStorage.getItem('store_sales')) || [];
-        let movements = JSON.parse(localStorage.getItem('store_movements')) || [];
+        let products = defaultProducts;
+        let sales = [];
+        let movements = [];
         let cart = [];
         let selectQuantities = {};
         let currentFilterCat = 'todos';
         let currentSalesStatusFilter = 'todos';
 
-        function saveAll() {
-            localStorage.setItem('store_products', JSON.stringify(products));
-            localStorage.setItem('store_sales', JSON.stringify(sales));
-            localStorage.setItem('store_movements', JSON.stringify(movements));
-            syncToGitHub();
+        // --- CONEXIÓN A GOOGLE SHEETS ---
+        async function loadFromCloud() {
+            try {
+                const res = await fetch(GOOGLE_SCRIPT_URL + "?action=read");
+                const data = await res.json();
+                if (data && data.products) {
+                    products = data.products;
+                    sales = data.sales || [];
+                    movements = data.movements || [];
+                    renderProducts();
+                }
+            } catch (err) {
+                console.error("Error al cargar desde Google Sheets:", err);
+            }
         }
 
-        // --- SINCRONIZACIÓN AUTOMÁTICA BLINDADA ---
-        async function syncToGitHub() {
+        async function saveToCloud() {
             const indicator = document.getElementById('sync-status');
             if (indicator) {
-                indicator.innerText = "☁️ Sincronizando...";
+                indicator.innerText = "⏳ Guardando...";
                 indicator.className = "text-[10px] bg-amber-900 text-amber-300 px-2.5 py-1 rounded-full font-bold inline-block";
             }
 
             try {
-                let fullSource = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
-                let newDefaultStr = "const defaultProducts = " + JSON.stringify(products, null, 12) + ";";
-                fullSource = fullSource.replace(/const defaultProducts = \[[\s\S]*?\];/, newDefaultStr);
-
-                // Manejo de UTF-8 robusto para evitar errores de codificación
-                const utf8Bytes = new TextEncoder().encode(fullSource);
-                let binaryStr = "";
-                for (let i = 0; i < utf8Bytes.length; i++) {
-                    binaryStr += String.fromCharCode(utf8Bytes[i]);
-                }
-                const base64Content = btoa(binaryStr);
-
-                const apiUrl = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/index.html`;
-
-                const getRes = await fetch(apiUrl, {
-                    headers: { 
-                        'Authorization': `Bearer ${GH_TOKEN}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
+                const payload = { products, sales, movements };
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
                 });
 
-                if (!getRes.ok) throw new Error("No se pudo obtener el archivo de GitHub");
-                const fileData = await getRes.json();
-
-                const putRes = await fetch(apiUrl, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${GH_TOKEN}`,
-                        'Accept': 'application/vnd.github.v3+json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: "Sincronización automática de datos",
-                        content: base64Content,
-                        sha: fileData.sha
-                    })
-                });
-
-                if (putRes.ok && indicator) {
-                    indicator.innerText = "☁️ Sincronizado en la Nube";
+                if (indicator) {
+                    indicator.innerText = "🟢 Sincronizado";
                     indicator.className = "text-[10px] bg-emerald-900 text-emerald-300 px-2.5 py-1 rounded-full font-bold inline-block";
-                } else {
-                    throw new Error("Respuesta no OK de GitHub");
                 }
             } catch (err) {
-                console.error("Error sincronizando:", err);
+                console.error("Error al guardar en la nube:", err);
                 if (indicator) {
-                    indicator.innerText = "⚠️ Error de Sincro";
+                    indicator.innerText = "🔴 Error Sincro";
                     indicator.className = "text-[10px] bg-rose-900 text-rose-300 px-2.5 py-1 rounded-full font-bold inline-block";
                 }
             }
@@ -371,7 +355,7 @@
             const text = document.getElementById(elementId).innerText;
             navigator.clipboard.writeText(text).then(() => {
                 const orig = btn.innerText;
-                btn.innerText = "✓ ¡Copiado!";
+                btn.innerText = "✔ ¡Copiado!";
                 setTimeout(() => btn.innerText = orig, 2000);
             });
         }
@@ -526,7 +510,7 @@
                                     <button onclick="changeCartQty(${item.id}, 1)" class="w-6 h-6 flex items-center justify-center font-bold text-slate-600">+</button>
                                 </div>
                                 <span class="font-bold text-slate-900 w-20 text-right">$${(item.price * item.quantity).toLocaleString()}</span>
-                                <button onclick="removeFromCart(${item.id})" class="text-rose-400 hover:text-rose-600 text-xs pl-1">🗑️</button>
+                                <button onclick="removeFromCart(${item.id})" class="text-rose-400 hover:text-rose-600 text-xs pl-1">🗑</button>
                             </div>
                         </div>
                     `;
@@ -540,7 +524,7 @@
             document.getElementById('cart-modal').classList.toggle('hidden');
         }
 
-        // --- ENVIAR PEDIDO A WHATSAPP ---
+        // --- PROCESAR PEDIDO Y CONTEO REGRESIVO A WHATSAPP ---
         function processCheckout(e) {
             e.preventDefault();
             if (cart.length === 0) {
@@ -558,12 +542,12 @@
                 return cItem ? { ...p, stock: Math.max(0, p.stock - cItem.quantity) } : p;
             });
 
-            // Guardar pedido con estados independientes
+            // Guardar pedido
             const newSale = {
                 id: Date.now(),
                 type: 'venta',
-                deliveryStatus: 'pendiente', // 'pendiente' o 'entregado'
-                paymentStatus: 'pendiente',  // 'pendiente' o 'cobrado'
+                deliveryStatus: 'pendiente',
+                paymentStatus: 'pendiente',
                 date: new Date().toLocaleString('es-AR'),
                 customer: name,
                 payment: payment,
@@ -572,18 +556,33 @@
             };
 
             sales.unshift(newSale);
-            saveAll();
+            saveToCloud();
             renderProducts();
 
             let text = `*NUEVO PEDIDO PASTA DÉCOR*\n\n👤 *Cliente:* ${name}\n💳 *Pago:* ${payment}\n🛒 *Detalle:* ${newSale.items}\n\n💰 *TOTAL:* $${total.toLocaleString()}`;
-            
+            const waUrl = `https://wa.me/5492364351764?text=${encodeURIComponent(text)}`;
+
             toggleCart();
             document.getElementById('checkout-form').reset();
             document.getElementById('payment-info-box').classList.add('hidden');
             cart = [];
             updateCartUI();
 
-            window.open(`https://wa.me/5492364351764?text=${encodeURIComponent(text)}`, '_blank');
+            // Modal de conteo regresivo
+            document.getElementById('manual-wa-link').href = waUrl;
+            document.getElementById('redirect-modal').classList.remove('hidden');
+
+            let secondsLeft = 3;
+            document.getElementById('countdown-num').innerText = secondsLeft;
+            
+            const timer = setInterval(() => {
+                secondsLeft--;
+                document.getElementById('countdown-num').innerText = secondsLeft;
+                if (secondsLeft <= 0) {
+                    clearInterval(timer);
+                    window.location.href = waUrl;
+                }
+            }, 1000);
         }
 
         function addCashMovement(e) {
@@ -605,7 +604,7 @@
             };
 
             movements.unshift(newMov);
-            saveAll();
+            saveToCloud();
             renderAdminData();
             e.target.reset();
         }
@@ -661,14 +660,14 @@
                         <td class="p-3 text-right space-x-1">
                             <button onclick="adjustStock(${p.id}, -1)" class="w-7 h-7 bg-slate-200 font-bold rounded cursor-pointer">-</button>
                             <button onclick="adjustStock(${p.id}, 1)" class="w-7 h-7 bg-slate-200 font-bold rounded cursor-pointer">+</button>
-                            <button onclick="deleteProduct(${p.id})" class="ml-2 px-2 py-1 bg-rose-100 text-rose-700 rounded text-xs">🗑️</button>
+                            <button onclick="deleteProduct(${p.id})" class="ml-2 px-2 py-1 bg-rose-100 text-rose-700 rounded text-xs">🗑</button>
                         </td>
                     </tr>
                 `;
             });
             document.getElementById('admin-total-valuation').innerText = '$' + totalValuation.toLocaleString();
 
-            // VENTAS Y MOVIMIENTOS
+            // VENTAS Y ESTADOS
             const salesBody = document.getElementById('admin-sales-list');
             salesBody.innerHTML = '';
             let totalRevenue = 0;
@@ -687,7 +686,6 @@
             document.getElementById('admin-pending-payment-val').innerText = '$' + pendingPaymentVal.toLocaleString();
             document.getElementById('admin-pending-delivery-count').innerText = pendingDeliveryCount;
 
-            // Filtrado de la tabla según la solapa seleccionada
             const filteredActivity = allActivity.filter(s => {
                 if (currentSalesStatusFilter === 'p_entrega') return s.type === 'venta' && s.deliveryStatus === 'pendiente';
                 if (currentSalesStatusFilter === 'p_cobro') return s.type === 'venta' && s.paymentStatus === 'pendiente';
@@ -711,22 +709,22 @@
                             <td class="p-3 text-slate-600 max-w-xs truncate">${s.items}</td>
                             <td class="p-3">
                                 ${s.type === 'venta' ? `
-                                    <button onclick="toggleDeliveryStatus(${s.id})" class="px-2.5 py-1 rounded-lg font-bold cursor-pointer transition ${isDeliveryPending ? 'bg-sky-100 text-sky-800 hover:bg-sky-200' : 'bg-emerald-100 text-emerald-800'}">
-                                        ${isDeliveryPending ? '🚚 Pendiente' : '📦 Entregado'}
+                                    <button onclick="toggleDeliveryStatus(${s.id})" class="px-3 py-1.5 rounded-lg font-bold text-[11px] cursor-pointer transition ${isDeliveryPending ? 'bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200' : 'bg-emerald-100 text-emerald-800 border border-emerald-300'}">
+                                        ${isDeliveryPending ? '🚚 ENTREGAR' : '✔ ENTREGADO'}
                                     </button>
                                 ` : '<span class="text-slate-400">-</span>'}
                             </td>
                             <td class="p-3">
                                 ${s.type === 'venta' ? `
-                                    <button onclick="togglePaymentStatus(${s.id})" class="px-2.5 py-1 rounded-lg font-bold cursor-pointer transition ${isPaymentPending ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' : 'bg-emerald-100 text-emerald-800'}">
-                                        ${isPaymentPending ? '⏳ Pendiente' : '💵 Cobrado'}
+                                    <button onclick="togglePaymentStatus(${s.id})" class="px-3 py-1.5 rounded-lg font-bold text-[11px] cursor-pointer transition ${isPaymentPending ? 'bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200' : 'bg-emerald-100 text-emerald-800 border border-emerald-300'}">
+                                        ${isPaymentPending ? '💵 COBRAR' : '✔ COBRADO'}
                                     </button>
                                 ` : '<span class="text-slate-400">Manual</span>'}
                             </td>
                             <td class="p-3 font-bold ${s.total < 0 ? 'text-rose-600' : 'text-slate-900'}">$${s.total.toLocaleString()}</td>
                             <td class="p-3 text-right">
                                 ${s.type === 'venta' && (isDeliveryPending || isPaymentPending) ? `
-                                    <button onclick="sendReminderWhatsApp('${s.customer}', '${s.items}', ${s.total})" class="px-2 py-1 bg-emerald-50 text-emerald-700 font-bold border border-emerald-200 rounded-lg hover:bg-emerald-100 cursor-pointer">
+                                    <button onclick="sendReminderWhatsApp('${s.customer}', '${s.items}', ${s.total})" class="px-2.5 py-1 bg-emerald-50 text-emerald-700 font-bold border border-emerald-200 rounded-lg hover:bg-emerald-100 cursor-pointer">
                                         🔔 Recordatorio WA
                                     </button>
                                 ` : ''}
@@ -739,13 +737,13 @@
 
         function toggleDeliveryStatus(id) {
             sales = sales.map(s => s.id === id ? { ...s, deliveryStatus: s.deliveryStatus === 'pendiente' ? 'entregado' : 'pendiente' } : s);
-            saveAll();
+            saveToCloud();
             renderAdminData();
         }
 
         function togglePaymentStatus(id) {
             sales = sales.map(s => s.id === id ? { ...s, paymentStatus: s.paymentStatus === 'pendiente' ? 'cobrado' : 'pendiente' } : s);
-            saveAll();
+            saveToCloud();
             renderAdminData();
         }
 
@@ -756,14 +754,14 @@
 
         function adjustStock(id, delta) {
             products = products.map(p => p.id === id ? { ...p, stock: Math.max(0, p.stock + delta) } : p);
-            saveAll();
+            saveToCloud();
             renderProducts();
             renderAdminData();
         }
 
         function updatePrice(id, newPrice) {
             products = products.map(p => p.id === id ? { ...p, price: parseFloat(newPrice) || 0 } : p);
-            saveAll();
+            saveToCloud();
             renderProducts();
             renderAdminData();
         }
@@ -771,7 +769,7 @@
         function deleteProduct(id) {
             if (confirm("¿Eliminar producto?")) {
                 products = products.filter(p => p.id !== id);
-                saveAll();
+                saveToCloud();
                 renderProducts();
                 renderAdminData();
             }
@@ -789,7 +787,7 @@
                 desc: document.getElementById('new-p-desc').value
             };
             products.push(newProd);
-            saveAll();
+            saveToCloud();
             renderProducts();
             renderAdminData();
             switchAdminTab('stock');
@@ -802,13 +800,14 @@
                 products = defaultProducts;
                 sales = [];
                 movements = [];
-                saveAll();
+                saveToCloud();
                 renderProducts();
                 renderAdminData();
             }
         }
 
+        loadFromCloud();
         renderProducts();
     </script>
 </body>
-                        </html>
+    </html>
