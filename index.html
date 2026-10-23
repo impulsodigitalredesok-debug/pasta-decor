@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pasta Décor - Tienda Online Repostería</title>
-    <!-- Tailwind CSS para diseño moderno -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
@@ -21,15 +21,12 @@
             </div>
 
             <div class="flex items-center space-x-3">
-                <!-- Sincronizador en vivo -->
                 <span id="sync-status" class="text-[10px] bg-emerald-900 text-emerald-300 px-2.5 py-1 rounded-full font-bold hidden sm:inline-block">☁️ Sincronizado</span>
 
-                <!-- Botón Admin -->
                 <button onclick="openAdminModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3.5 py-2 rounded-xl border border-slate-700 flex items-center gap-1.5 transition cursor-pointer">
                     <span>⚙️ Admin</span>
                 </button>
 
-                <!-- Botón Carrito -->
                 <button onclick="toggleCart()" class="relative bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl flex items-center gap-2 font-medium transition shadow-sm cursor-pointer">
                     <span>🛒 Carrito</span>
                     <span id="cart-counter" class="absolute -top-2 -right-2 bg-amber-500 text-slate-950 font-bold text-xs w-6 h-6 rounded-full flex items-center justify-center border-2 border-slate-900">0</span>
@@ -40,7 +37,6 @@
 
     <!-- CONTENIDO PRINCIPAL -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-8">
-        
         <div class="mb-8 bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
                 <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Catálogo de Pastas y Colores</h2>
@@ -52,7 +48,7 @@
             </div>
         </div>
 
-        <!-- BUSCADOR Y FILTROS RÁPIDOS -->
+        <!-- BUSCADOR Y FILTROS -->
         <div class="mb-8 flex flex-col md:flex-row gap-4 items-center justify-between bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
             <div class="w-full md:w-96 relative">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">🔍</span>
@@ -69,10 +65,7 @@
             </div>
         </div>
 
-        <!-- GRILLA DE PRODUCTOS -->
-        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Carga dinámica -->
-        </div>
+        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     </main>
 
     <!-- MODAL DEL CARRITO / CHECKOUT -->
@@ -82,9 +75,7 @@
             
             <h3 class="text-xl font-extrabold text-slate-900 mb-4">Tu Carrito de Compras</h3>
             
-            <div id="cart-items" class="space-y-3 mb-4 divide-y divide-slate-100">
-                <!-- Items dinámicos -->
-            </div>
+            <div id="cart-items" class="space-y-3 mb-4 divide-y divide-slate-100"></div>
 
             <div class="border-t border-slate-200 pt-4 mb-6 flex justify-between items-center">
                 <span class="text-slate-600 font-medium">Total:</span>
@@ -126,57 +117,93 @@
         </div>
     </div>
 
-    <!-- PANEL DE ADMINISTRACIÓN -->
+    <!-- PANEL DE ADMINISTRACIÓN COMPLETO -->
     <div id="admin-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-5xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-6xl w-full p-6 shadow-2xl relative max-h-[92vh] overflow-y-auto">
             <button onclick="closeAdminModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 font-bold cursor-pointer text-lg">✕</button>
 
-            <!-- CAJAS SUPERIORES DE RESUMEN -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 border-b border-slate-200 pb-4">
-                <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl flex items-center justify-between">
-                    <div>
-                        <span class="text-xs text-emerald-700 font-medium block">Ventas Cobradas</span>
-                        <span id="admin-total-revenue" class="text-xl font-black text-emerald-700">$0</span>
-                    </div>
-                    <span class="text-xl">💰</span>
+            <!-- RESUMEN EJECUTIVO -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6 border-b border-slate-200 pb-4">
+                <div class="bg-emerald-50 border border-emerald-200 p-3.5 rounded-2xl">
+                    <span class="text-[11px] text-emerald-700 font-medium block">Cobrado Neto</span>
+                    <span id="admin-total-revenue" class="text-lg font-black text-emerald-700">$0</span>
                 </div>
-                <div class="bg-sky-50 border border-sky-200 p-4 rounded-2xl flex items-center justify-between">
-                    <div>
-                        <span class="text-xs text-sky-700 font-medium block">Valorización del Stock</span>
-                        <span id="admin-total-valuation" class="text-xl font-black text-sky-700">$0</span>
-                    </div>
-                    <span class="text-xl">📦</span>
+                <div class="bg-amber-50 border border-amber-200 p-3.5 rounded-2xl">
+                    <span class="text-[11px] text-amber-700 font-medium block">Pend. Cobro</span>
+                    <span id="admin-pending-payment-val" class="text-lg font-black text-amber-700">$0</span>
                 </div>
-                <div class="bg-amber-50 border border-amber-200 p-4 rounded-2xl flex items-center justify-between">
-                    <div>
-                        <span class="text-xs text-amber-700 font-medium block">Pedidos Pendientes</span>
-                        <span id="admin-pending-count" class="text-xl font-black text-amber-700">0</span>
-                    </div>
-                    <span class="text-xl">⏳</span>
+                <div class="bg-sky-50 border border-sky-200 p-3.5 rounded-2xl">
+                    <span class="text-[11px] text-sky-700 font-medium block">Pend. Entrega</span>
+                    <span id="admin-pending-delivery-count" class="text-lg font-black text-sky-700">0</span>
+                </div>
+                <div class="bg-purple-50 border border-purple-200 p-3.5 rounded-2xl">
+                    <span class="text-[11px] text-purple-700 font-medium block">Valor Stock</span>
+                    <span id="admin-total-valuation" class="text-lg font-black text-purple-700">$0</span>
                 </div>
             </div>
 
             <!-- PESTAÑAS ADMIN -->
             <div class="flex border-b border-slate-200 mb-6 gap-4">
-                <button onclick="switchAdminTab('stock')" id="tab-btn-stock" class="pb-2 font-bold text-sm border-b-2 border-emerald-600 text-emerald-600 cursor-pointer">
-                    📦 Control de Stock y Precios
+                <button onclick="switchAdminTab('sales')" id="tab-btn-sales" class="pb-2 font-bold text-sm border-b-2 border-emerald-600 text-emerald-600 cursor-pointer">
+                    📋 Pedidos & Estado
                 </button>
-                <button onclick="switchAdminTab('sales')" id="tab-btn-sales" class="pb-2 font-bold text-sm text-slate-400 hover:text-slate-700 cursor-pointer">
-                    💵 Pedidos & Caja
+                <button onclick="switchAdminTab('stock')" id="tab-btn-stock" class="pb-2 font-bold text-sm text-slate-400 hover:text-slate-700 cursor-pointer">
+                    📦 Stock y Precios
                 </button>
                 <button onclick="switchAdminTab('add')" id="tab-btn-add" class="pb-2 font-bold text-sm text-slate-400 hover:text-slate-700 cursor-pointer">
                     ➕ Nuevo Producto
                 </button>
             </div>
 
-            <!-- TAB 1: STOCK -->
-            <div id="admin-tab-stock">
-                <div class="mb-4 flex justify-between items-center">
-                    <span id="github-sync-indicator" class="text-xs text-slate-500 font-medium">🔄 Sincronización automática con GitHub activa</span>
-                    <button onclick="syncToGitHub()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1.5">
-                        <span>☁️ Forzar Sincronización</span>
+            <!-- TAB 1: PEDIDOS Y ESTADOS DETALLADOS -->
+            <div id="admin-tab-sales" class="space-y-4">
+                <!-- SUB-FILTROS DE ESTADO -->
+                <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                    <div class="flex flex-wrap gap-1.5">
+                        <button onclick="filterSalesStatus('todos')" id="sfilter-todos" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white cursor-pointer">Todos</button>
+                        <button onclick="filterSalesStatus('p_entrega')" id="sfilter-p_entrega" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 cursor-pointer">🚚 Pend. Entrega</button>
+                        <button onclick="filterSalesStatus('p_cobro')" id="sfilter-p_cobro" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 cursor-pointer">⏳ Pend. Cobro</button>
+                        <button onclick="filterSalesStatus('completado')" id="sfilter-completado" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 cursor-pointer">✓ Completados</button>
+                    </div>
+                    
+                    <button onclick="syncToGitHub()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3.5 py-1.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1">
+                        <span>☁️ Sincronizar</span>
                     </button>
                 </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-100 text-slate-600 uppercase text-[11px]">
+                            <tr>
+                                <th class="p-3 rounded-l-xl">Fecha / Cliente</th>
+                                <th class="p-3">Detalle Pedido</th>
+                                <th class="p-3">Estado Entrega</th>
+                                <th class="p-3">Estado Cobro</th>
+                                <th class="p-3">Monto ($)</th>
+                                <th class="p-3 text-right rounded-r-xl">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-sales-list" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+
+                <!-- MOVIMIENTO MANUAL CAJA -->
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl mt-6">
+                    <h4 class="font-bold text-xs text-slate-700 uppercase mb-3">Registrar Gasto o Ingreso Manual</h4>
+                    <form onsubmit="addCashMovement(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                        <select id="mov-type" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
+                            <option value="egreso">🔴 Egreso / Gasto (-)</option>
+                            <option value="ingreso">🟢 Ingreso Manual (+)</option>
+                        </select>
+                        <input type="text" id="mov-desc" required placeholder="Concepto (ej. Insumos)" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                        <input type="number" id="mov-amount" required placeholder="Monto ($)" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                        <button type="submit" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl py-2 cursor-pointer transition">Registrar</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- TAB 2: STOCK -->
+            <div id="admin-tab-stock" class="hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm">
                         <thead class="bg-slate-100 text-slate-600 uppercase text-xs">
@@ -184,41 +211,10 @@
                                 <th class="p-3 rounded-l-xl">Producto / Variedad</th>
                                 <th class="p-3">Precio ($)</th>
                                 <th class="p-3">Stock Actual</th>
-                                <th class="p-3 text-right rounded-r-xl">Acciones / Ajustar</th>
+                                <th class="p-3 text-right rounded-r-xl">Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="admin-stock-list" class="divide-y divide-slate-100"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- TAB 2: PEDIDOS Y CAJA -->
-            <div id="admin-tab-sales" class="hidden space-y-6">
-                <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl">
-                    <h4 class="font-bold text-sm text-slate-900 mb-3">Registrar Movimiento Extra (Gasto / Ingreso Manual)</h4>
-                    <form onsubmit="addCashMovement(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                        <select id="mov-type" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
-                            <option value="egreso">🔴 Egreso / Gasto (-)</option>
-                            <option value="ingreso">🟢 Ingreso Manual (+)</option>
-                        </select>
-                        <input type="text" id="mov-desc" required placeholder="Concepto (ej. Insumo, Flete)" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs">
-                        <input type="number" id="mov-amount" required placeholder="Monto ($)" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs">
-                        <button type="submit" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl py-2 cursor-pointer transition">Registrar</button>
-                    </form>
-                </div>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-100 text-slate-600 uppercase text-xs">
-                            <tr>
-                                <th class="p-3 rounded-l-xl">Fecha</th>
-                                <th class="p-3">Cliente / Tipo</th>
-                                <th class="p-3">Detalle</th>
-                                <th class="p-3">Estado / Cobro</th>
-                                <th class="p-3 text-right rounded-r-xl">Total ($)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-sales-list" class="divide-y divide-slate-100"></tbody>
                     </table>
                 </div>
             </div>
@@ -228,7 +224,7 @@
                 <form onsubmit="addNewProduct(event)" class="space-y-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre del Producto</label>
-                        <input type="text" id="new-p-name" required placeholder="Ej. Paquete 500g Color Dorado" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <input type="text" id="new-p-name" required placeholder="Ej. Paquete 500g Color Dorado" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm">
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
@@ -258,18 +254,18 @@
                         <label class="block text-xs font-semibold text-slate-700 mb-1">Descripción</label>
                         <input type="text" id="new-p-desc" placeholder="Ej. Pasta elástica" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm">
                     </div>
-                    <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 rounded-xl transition cursor-pointer">Guardar</button>
+                    <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 rounded-xl transition cursor-pointer">Guardar Producto</button>
                 </form>
             </div>
 
             <div class="mt-8 pt-4 border-t border-slate-100 flex justify-between items-center text-xs">
-                <button onclick="resetAllData()" class="text-rose-500 hover:underline cursor-pointer">⚠️ Borrar todo y restaurar</button>
+                <button onclick="resetAllData()" class="text-rose-500 hover:underline cursor-pointer">⚠️ Restaurar de Fábrica</button>
                 <button onclick="closeAdminModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold px-4 py-2 rounded-xl cursor-pointer">Cerrar</button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT DE FUNCIONAMIENTO -->
+    <!-- SCRIPT PRINCIPAL -->
     <script>
         const ADMIN_PASSWORD = "8266";
         const GH_USER = "impulsodigitalredesok-debug";
@@ -298,8 +294,9 @@
         let sales = JSON.parse(localStorage.getItem('store_sales')) || [];
         let movements = JSON.parse(localStorage.getItem('store_movements')) || [];
         let cart = [];
-        let selectQuantities = {}; // Cantidades seleccionadas en la tarjeta del producto
+        let selectQuantities = {};
         let currentFilterCat = 'todos';
+        let currentSalesStatusFilter = 'todos';
 
         function saveAll() {
             localStorage.setItem('store_products', JSON.stringify(products));
@@ -308,7 +305,7 @@
             syncToGitHub();
         }
 
-        // --- SINCRONIZACIÓN AUTOMÁTICA GITHUB CORREGIDA ---
+        // --- SINCRONIZACIÓN AUTOMÁTICA BLINDADA ---
         async function syncToGitHub() {
             const indicator = document.getElementById('sync-status');
             if (indicator) {
@@ -321,13 +318,24 @@
                 let newDefaultStr = "const defaultProducts = " + JSON.stringify(products, null, 12) + ";";
                 fullSource = fullSource.replace(/const defaultProducts = \[[\s\S]*?\];/, newDefaultStr);
 
-                const base64Content = btoa(unescape(encodeURIComponent(fullSource)));
+                // Manejo de UTF-8 robusto para evitar errores de codificación
+                const utf8Bytes = new TextEncoder().encode(fullSource);
+                let binaryStr = "";
+                for (let i = 0; i < utf8Bytes.length; i++) {
+                    binaryStr += String.fromCharCode(utf8Bytes[i]);
+                }
+                const base64Content = btoa(binaryStr);
+
                 const apiUrl = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/index.html`;
 
                 const getRes = await fetch(apiUrl, {
-                    headers: { 'Authorization': `Bearer ${GH_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
+                    headers: { 
+                        'Authorization': `Bearer ${GH_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
                 });
-                if (!getRes.ok) throw new Error("Error de conexión GitHub");
+
+                if (!getRes.ok) throw new Error("No se pudo obtener el archivo de GitHub");
                 const fileData = await getRes.json();
 
                 const putRes = await fetch(apiUrl, {
@@ -338,7 +346,7 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        message: "Actualización automática",
+                        message: "Sincronización automática de datos",
                         content: base64Content,
                         sha: fileData.sha
                     })
@@ -347,9 +355,11 @@
                 if (putRes.ok && indicator) {
                     indicator.innerText = "☁️ Sincronizado en la Nube";
                     indicator.className = "text-[10px] bg-emerald-900 text-emerald-300 px-2.5 py-1 rounded-full font-bold inline-block";
+                } else {
+                    throw new Error("Respuesta no OK de GitHub");
                 }
             } catch (err) {
-                console.error(err);
+                console.error("Error sincronizando:", err);
                 if (indicator) {
                     indicator.innerText = "⚠️ Error de Sincro";
                     indicator.className = "text-[10px] bg-rose-900 text-rose-300 px-2.5 py-1 rounded-full font-bold inline-block";
@@ -379,7 +389,6 @@
             renderProducts();
         }
 
-        // --- BOTONES DE CANTIDAD EN CADA PRODUCTO ---
         function changeCardQty(id, delta) {
             if (!selectQuantities[id]) selectQuantities[id] = 1;
             selectQuantities[id] += delta;
@@ -423,9 +432,9 @@
                                 <div class="flex items-center justify-between mb-3">
                                     <span class="text-xl font-extrabold text-slate-900">$${p.price.toLocaleString()}</span>
                                     <div class="flex items-center border border-slate-200 rounded-xl bg-slate-50 px-1">
-                                        <button onclick="changeCardQty(${p.id}, -1)" class="w-7 h-7 flex items-center justify-center font-bold text-slate-600 cursor-pointer">-</button>
+                                        <button onclick="changeCardQty(${p.id}, -1)" class="w-7 h-7 flex items-center justify-center font-bold text-slate-600 hover:text-slate-900 cursor-pointer">-</button>
                                         <span class="px-2 text-xs font-bold text-slate-800">${qty}</span>
-                                        <button onclick="changeCardQty(${p.id}, 1)" class="w-7 h-7 flex items-center justify-center font-bold text-slate-600 cursor-pointer">+</button>
+                                        <button onclick="changeCardQty(${p.id}, 1)" class="w-7 h-7 flex items-center justify-center font-bold text-slate-600 hover:text-slate-900 cursor-pointer">+</button>
                                     </div>
                                 </div>
                                 <button onclick="addToCartWithQty(${p.id})" ${isOut ? 'disabled' : ''} class="w-full py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer ${isOut ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm'}">
@@ -463,7 +472,7 @@
             } else {
                 cart.push({ ...product, quantity: qtyToAdd });
             }
-            selectQuantities[id] = 1; // Resetea selector
+            selectQuantities[id] = 1;
             updateCartUI();
 
             const counter = document.getElementById('cart-counter');
@@ -531,7 +540,7 @@
             document.getElementById('cart-modal').classList.toggle('hidden');
         }
 
-        // --- PROCESO DE COMPRA Y WHATSAPP DIRECTO ---
+        // --- ENVIAR PEDIDO A WHATSAPP ---
         function processCheckout(e) {
             e.preventDefault();
             if (cart.length === 0) {
@@ -549,22 +558,23 @@
                 return cItem ? { ...p, stock: Math.max(0, p.stock - cItem.quantity) } : p;
             });
 
-            // Guardar pedido como PENDIENTE
+            // Guardar pedido con estados independientes
             const newSale = {
                 id: Date.now(),
                 type: 'venta',
-                status: 'pendiente', // pendiente o cobrado
+                deliveryStatus: 'pendiente', // 'pendiente' o 'entregado'
+                paymentStatus: 'pendiente',  // 'pendiente' o 'cobrado'
                 date: new Date().toLocaleString('es-AR'),
                 customer: name,
                 payment: payment,
                 total: total,
                 items: cart.map(i => `${i.quantity}x ${i.name}`).join(', ')
             };
+
             sales.unshift(newSale);
             saveAll();
             renderProducts();
 
-            // Mensaje de WhatsApp sin número de pedido
             let text = `*NUEVO PEDIDO PASTA DÉCOR*\n\n👤 *Cliente:* ${name}\n💳 *Pago:* ${payment}\n🛒 *Detalle:* ${newSale.items}\n\n💰 *TOTAL:* $${total.toLocaleString()}`;
             
             toggleCart();
@@ -573,7 +583,6 @@
             cart = [];
             updateCartUI();
 
-            // Redirección directa a WhatsApp
             window.open(`https://wa.me/5492364351764?text=${encodeURIComponent(text)}`, '_blank');
         }
 
@@ -587,7 +596,8 @@
             const newMov = {
                 id: Date.now(),
                 type: type,
-                status: 'cobrado',
+                deliveryStatus: 'entregado',
+                paymentStatus: 'cobrado',
                 date: new Date().toLocaleString('es-AR'),
                 customer: type === 'egreso' ? '🔴 GASTO / EGRESO' : '🟢 INGRESO MANUAL',
                 items: desc,
@@ -622,7 +632,21 @@
             document.getElementById('tab-btn-' + tab).className = "pb-2 font-bold text-sm border-b-2 border-emerald-600 text-emerald-600 cursor-pointer";
         }
 
+        function filterSalesStatus(status) {
+            currentSalesStatusFilter = status;
+            ['todos', 'p_entrega', 'p_cobro', 'completado'].forEach(s => {
+                const btn = document.getElementById('sfilter-' + s);
+                if (btn) {
+                    btn.className = s === status 
+                        ? "px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white cursor-pointer" 
+                        : "px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 cursor-pointer";
+                }
+            });
+            renderAdminData();
+        }
+
         function renderAdminData() {
+            // STOCK
             const stockBody = document.getElementById('admin-stock-list');
             stockBody.innerHTML = '';
             let totalValuation = 0;
@@ -644,53 +668,90 @@
             });
             document.getElementById('admin-total-valuation').innerText = '$' + totalValuation.toLocaleString();
 
+            // VENTAS Y MOVIMIENTOS
             const salesBody = document.getElementById('admin-sales-list');
             salesBody.innerHTML = '';
             let totalRevenue = 0;
-            let pendingCount = 0;
+            let pendingPaymentVal = 0;
+            let pendingDeliveryCount = 0;
 
             const allActivity = [...sales, ...movements].sort((a,b) => b.id - a.id);
 
-            if (allActivity.length === 0) {
-                salesBody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-slate-400">Sin movimientos registrados.</td></tr>`;
-            } else {
-                allActivity.forEach(s => {
-                    if (s.type === 'venta' && s.status === 'cobrado') totalRevenue += s.total;
-                    if (s.type === 'venta' && s.status === 'pendiente') pendingCount++;
-                    if (s.status === 'cobrado' && s.type !== 'venta') totalRevenue += s.total; // Ingresos manuales
+            allActivity.forEach(s => {
+                if (s.paymentStatus === 'cobrado') totalRevenue += s.total;
+                if (s.type === 'venta' && s.paymentStatus === 'pendiente') pendingPaymentVal += s.total;
+                if (s.type === 'venta' && s.deliveryStatus === 'pendiente') pendingDeliveryCount++;
+            });
 
-                    const isPending = s.status === 'pendiente';
+            document.getElementById('admin-total-revenue').innerText = '$' + totalRevenue.toLocaleString();
+            document.getElementById('admin-pending-payment-val').innerText = '$' + pendingPaymentVal.toLocaleString();
+            document.getElementById('admin-pending-delivery-count').innerText = pendingDeliveryCount;
+
+            // Filtrado de la tabla según la solapa seleccionada
+            const filteredActivity = allActivity.filter(s => {
+                if (currentSalesStatusFilter === 'p_entrega') return s.type === 'venta' && s.deliveryStatus === 'pendiente';
+                if (currentSalesStatusFilter === 'p_cobro') return s.type === 'venta' && s.paymentStatus === 'pendiente';
+                if (currentSalesStatusFilter === 'completado') return s.type === 'venta' && s.deliveryStatus === 'entregado' && s.paymentStatus === 'cobrado';
+                return true;
+            });
+
+            if (filteredActivity.length === 0) {
+                salesBody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400">No hay registros con este filtro.</td></tr>`;
+            } else {
+                filteredActivity.forEach(s => {
+                    const isDeliveryPending = s.deliveryStatus === 'pendiente';
+                    const isPaymentPending = s.paymentStatus === 'pendiente';
+
                     salesBody.innerHTML += `
-                        <tr class="hover:bg-slate-50">
-                            <td class="p-3 text-xs text-slate-500">${s.date}</td>
-                            <td class="p-3 font-semibold text-slate-900">${s.customer}</td>
-                            <td class="p-3 text-xs text-slate-600 max-w-xs truncate">${s.items}</td>
+                        <tr class="hover:bg-slate-50 text-xs">
+                            <td class="p-3">
+                                <span class="font-bold text-slate-900 block">${s.customer}</span>
+                                <span class="text-slate-400 text-[10px]">${s.date}</span>
+                            </td>
+                            <td class="p-3 text-slate-600 max-w-xs truncate">${s.items}</td>
                             <td class="p-3">
                                 ${s.type === 'venta' ? `
-                                    <button onclick="toggleSaleStatus(${s.id})" class="px-2.5 py-1 rounded-full text-xs font-bold cursor-pointer transition ${isPending ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' : 'bg-emerald-100 text-emerald-800'}">
-                                        ${isPending ? '⏳ Pendiente de Cobro' : '✓ Entregado / Cobrado'}
+                                    <button onclick="toggleDeliveryStatus(${s.id})" class="px-2.5 py-1 rounded-lg font-bold cursor-pointer transition ${isDeliveryPending ? 'bg-sky-100 text-sky-800 hover:bg-sky-200' : 'bg-emerald-100 text-emerald-800'}">
+                                        ${isDeliveryPending ? '🚚 Pendiente' : '📦 Entregado'}
                                     </button>
-                                ` : `<span class="text-xs font-bold text-slate-600">Manual</span>`}
+                                ` : '<span class="text-slate-400">-</span>'}
                             </td>
-                            <td class="p-3 text-right font-bold ${s.total < 0 ? 'text-rose-600' : 'text-emerald-700'}">$${s.total.toLocaleString()}</td>
+                            <td class="p-3">
+                                ${s.type === 'venta' ? `
+                                    <button onclick="togglePaymentStatus(${s.id})" class="px-2.5 py-1 rounded-lg font-bold cursor-pointer transition ${isPaymentPending ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' : 'bg-emerald-100 text-emerald-800'}">
+                                        ${isPaymentPending ? '⏳ Pendiente' : '💵 Cobrado'}
+                                    </button>
+                                ` : '<span class="text-slate-400">Manual</span>'}
+                            </td>
+                            <td class="p-3 font-bold ${s.total < 0 ? 'text-rose-600' : 'text-slate-900'}">$${s.total.toLocaleString()}</td>
+                            <td class="p-3 text-right">
+                                ${s.type === 'venta' && (isDeliveryPending || isPaymentPending) ? `
+                                    <button onclick="sendReminderWhatsApp('${s.customer}', '${s.items}', ${s.total})" class="px-2 py-1 bg-emerald-50 text-emerald-700 font-bold border border-emerald-200 rounded-lg hover:bg-emerald-100 cursor-pointer">
+                                        🔔 Recordatorio WA
+                                    </button>
+                                ` : ''}
+                            </td>
                         </tr>
                     `;
                 });
             }
-
-            document.getElementById('admin-total-revenue').innerText = '$' + totalRevenue.toLocaleString();
-            document.getElementById('admin-pending-count').innerText = pendingCount;
         }
 
-        function toggleSaleStatus(id) {
-            sales = sales.map(s => {
-                if (s.id === id) {
-                    s.status = s.status === 'pendiente' ? 'cobrado' : 'pendiente';
-                }
-                return s;
-            });
+        function toggleDeliveryStatus(id) {
+            sales = sales.map(s => s.id === id ? { ...s, deliveryStatus: s.deliveryStatus === 'pendiente' ? 'entregado' : 'pendiente' } : s);
             saveAll();
             renderAdminData();
+        }
+
+        function togglePaymentStatus(id) {
+            sales = sales.map(s => s.id === id ? { ...s, paymentStatus: s.paymentStatus === 'pendiente' ? 'cobrado' : 'pendiente' } : s);
+            saveAll();
+            renderAdminData();
+        }
+
+        function sendReminderWhatsApp(customer, items, total) {
+            let text = `*RECORDATORIO DE ENTREGA / PAGO - PASTA DÉCOR*\n\n👤 *Cliente:* ${customer}\n🛒 *Detalle:* ${items}\n💰 *Monto:* $${total.toLocaleString()}\n\nHola ${customer}, te contactamos para coordinar la entrega de tu pedido. ¡Muchas gracias!`;
+            window.open(`https://wa.me/5492364351764?text=${encodeURIComponent(text)}`, '_blank');
         }
 
         function adjustStock(id, delta) {
@@ -750,4 +811,4 @@
         renderProducts();
     </script>
 </body>
-                                                                                                      </html>
+                        </html>
