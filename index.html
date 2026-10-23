@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pasta Decor - Tienda Online Repostería</title>
+    <title>Pasta Décor - Tienda Online Repostería</title>
     <!-- Tailwind CSS para diseño moderno -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -13,10 +13,10 @@
     <header class="bg-slate-900 text-white sticky top-0 z-30 shadow-md">
         <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                
+                <div class="bg-pink-500 p-2 rounded-xl text-white font-bold text-xl">🎂</div>
                 <div>
-                    <h1 class="text-lg font-bold tracking-tight">Pasta Decor</h1>
-                    
+                    <h1 class="text-lg font-bold tracking-tight">Pasta Décor Repostería</h1>
+                    <p class="text-xs text-slate-400">Catálogo Oficial Junín</p>
                 </div>
             </div>
 
@@ -44,7 +44,7 @@
         <div class="mb-8 bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
                 <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Catálogo de Pastas y Colores</h2>
-                <p class="text-slate-300 text-sm mt-1">Añadí productos al carrito y aboná en Efectivo o por Transferencia Bancaria.</p>
+                <p class="text-slate-300 text-sm mt-1">Elegí cantidades, añadí al carrito y aboná en Efectivo o Transferencia.</p>
             </div>
             <div class="text-right">
                 <span class="text-xs text-slate-400 block">Medios de Pago</span>
@@ -54,13 +54,11 @@
 
         <!-- BUSCADOR Y FILTROS RÁPIDOS -->
         <div class="mb-8 flex flex-col md:flex-row gap-4 items-center justify-between bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-            <!-- Buscador en tiempo real -->
             <div class="w-full md:w-96 relative">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">🔍</span>
-                <input type="text" id="search-input" oninput="filterProducts()" placeholder="Buscar por nombre (ej. violeta, 5kg, goma)..." class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <input type="text" id="search-input" oninput="filterProducts()" placeholder="Buscar por nombre (ej. violeta, 5kg)..." class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
             </div>
 
-            <!-- Filtros por categoría -->
             <div class="flex flex-wrap gap-2 w-full md:w-auto justify-start md:justify-end">
                 <button onclick="filterCategory('todos')" id="cat-todos" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white cursor-pointer transition">Todos</button>
                 <button onclick="filterCategory('balde')" id="cat-balde" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer transition">Baldes</button>
@@ -73,7 +71,7 @@
 
         <!-- GRILLA DE PRODUCTOS -->
         <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Carga automáticamente mediante JavaScript -->
+            <!-- Carga dinámica -->
         </div>
     </main>
 
@@ -84,7 +82,6 @@
             
             <h3 class="text-xl font-extrabold text-slate-900 mb-4">Tu Carrito de Compras</h3>
             
-            <!-- LISTA DE PRODUCTOS -->
             <div id="cart-items" class="space-y-3 mb-4 divide-y divide-slate-100">
                 <!-- Items dinámicos -->
             </div>
@@ -94,7 +91,6 @@
                 <span id="cart-total" class="text-2xl font-extrabold text-slate-900">$0</span>
             </div>
 
-            <!-- FORMULARIO DE COMPRA -->
             <form id="checkout-form" onsubmit="processCheckout(event)" class="space-y-4 border-t border-slate-100 pt-4">
                 <h4 class="font-bold text-sm text-slate-900">Datos del Pedido</h4>
                 <div>
@@ -109,10 +105,8 @@
                     </select>
                 </div>
 
-                <!-- CARTEL CON COPIADO DE ALIAS / CBU -->
                 <div id="payment-info-box" class="bg-amber-50 border border-amber-200 p-4 rounded-2xl text-xs text-amber-900 hidden space-y-3">
                     <p class="font-bold">📋 Datos para realizar la transferencia:</p>
-                    
                     <div class="space-y-2 bg-white/80 p-3 rounded-xl border border-amber-200">
                         <div class="flex justify-between items-center">
                             <span><strong>Alias:</strong> <code id="alias-val">PASTADECOR.JUNIN</code></span>
@@ -125,34 +119,10 @@
                     </div>
                 </div>
 
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl transition shadow cursor-pointer">
-                    Confirmar Pedido
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl transition shadow cursor-pointer flex items-center justify-center gap-2 text-sm">
+                    <span>💬 Enviar Pedido por WhatsApp</span>
                 </button>
             </form>
-        </div>
-    </div>
-
-    <!-- MODAL POST-COMPRA (ENVIAR POR WHATSAPP) -->
-    <div id="success-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 text-center shadow-2xl relative">
-            <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
-                ✓
-            </div>
-            <h3 class="text-2xl font-black text-slate-900">¡Pedido Recibido!</h3>
-            <p class="text-slate-600 text-sm mt-2 mb-4">Gracias por tu compra. Hacé clic abajo para enviar los detalles de tu pedido directamente a nuestro WhatsApp y coordinar la entrega.</p>
-
-            <div class="bg-slate-50 p-4 rounded-2xl text-left border border-slate-200 text-xs text-slate-700 space-y-1 mb-6">
-                <p><strong>N° Pedido:</strong> <span id="summary-id">#0000</span></p>
-                <p><strong>Cliente:</strong> <span id="summary-name">-</span></p>
-                <p><strong>Pago:</strong> <span id="summary-payment">-</span></p>
-                <p><strong>Total:</strong> <span id="summary-total" class="font-extrabold text-slate-900">$0</span></p>
-            </div>
-
-            <a id="whatsapp-btn-link" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition shadow cursor-pointer text-sm">
-                <span>💬 Enviar Pedido por WhatsApp</span>
-            </a>
-
-            <button onclick="closeSuccessModal()" class="mt-3 text-slate-400 hover:text-slate-600 text-xs underline cursor-pointer">Cerrar ventana</button>
         </div>
     </div>
 
@@ -161,11 +131,11 @@
         <div class="bg-white rounded-3xl max-w-5xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button onclick="closeAdminModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 font-bold cursor-pointer text-lg">✕</button>
 
-            <!-- CAJAS SUPERIORES DE RESUMEN (INGRESOS, VALORIZACIÓN Y SALDO EN CAJA) -->
+            <!-- CAJAS SUPERIORES DE RESUMEN -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 border-b border-slate-200 pb-4">
                 <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl flex items-center justify-between">
                     <div>
-                        <span class="text-xs text-emerald-700 font-medium block">Total Ventas</span>
+                        <span class="text-xs text-emerald-700 font-medium block">Ventas Cobradas</span>
                         <span id="admin-total-revenue" class="text-xl font-black text-emerald-700">$0</span>
                     </div>
                     <span class="text-xl">💰</span>
@@ -177,12 +147,12 @@
                     </div>
                     <span class="text-xl">📦</span>
                 </div>
-                <div class="bg-indigo-50 border border-indigo-200 p-4 rounded-2xl flex items-center justify-between">
+                <div class="bg-amber-50 border border-amber-200 p-4 rounded-2xl flex items-center justify-between">
                     <div>
-                        <span class="text-xs text-indigo-700 font-medium block">Saldo Neto en Caja</span>
-                        <span id="admin-net-cash" class="text-xl font-black text-indigo-700">$0</span>
+                        <span class="text-xs text-amber-700 font-medium block">Pedidos Pendientes</span>
+                        <span id="admin-pending-count" class="text-xl font-black text-amber-700">0</span>
                     </div>
-                    <span class="text-xl">🏦</span>
+                    <span class="text-xl">⏳</span>
                 </div>
             </div>
 
@@ -192,19 +162,19 @@
                     📦 Control de Stock y Precios
                 </button>
                 <button onclick="switchAdminTab('sales')" id="tab-btn-sales" class="pb-2 font-bold text-sm text-slate-400 hover:text-slate-700 cursor-pointer">
-                    💵 Ventas & Caja
+                    💵 Pedidos & Caja
                 </button>
                 <button onclick="switchAdminTab('add')" id="tab-btn-add" class="pb-2 font-bold text-sm text-slate-400 hover:text-slate-700 cursor-pointer">
                     ➕ Nuevo Producto
                 </button>
             </div>
 
-            <!-- TAB 1: CONTROL DE STOCK Y PRECIOS -->
+            <!-- TAB 1: STOCK -->
             <div id="admin-tab-stock">
                 <div class="mb-4 flex justify-between items-center">
                     <span id="github-sync-indicator" class="text-xs text-slate-500 font-medium">🔄 Sincronización automática con GitHub activa</span>
                     <button onclick="syncToGitHub()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow transition cursor-pointer flex items-center gap-1.5">
-                        <span>☁️ Forzar Sincronización con GitHub</span>
+                        <span>☁️ Forzar Sincronización</span>
                     </button>
                 </div>
                 <div class="overflow-x-auto">
@@ -217,48 +187,43 @@
                                 <th class="p-3 text-right rounded-r-xl">Acciones / Ajustar</th>
                             </tr>
                         </thead>
-                        <tbody id="admin-stock-list" class="divide-y divide-slate-100">
-                            <!-- Filas de stock -->
-                        </tbody>
+                        <tbody id="admin-stock-list" class="divide-y divide-slate-100"></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- TAB 2: HISTORIAL DE VENTAS Y CAJA (INGRESOS / EGRESOS) -->
+            <!-- TAB 2: PEDIDOS Y CAJA -->
             <div id="admin-tab-sales" class="hidden space-y-6">
-                <!-- FORMULARIO DE INGRESO / EGRESO MANUAL DE CAJA -->
                 <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl">
-                    <h4 class="font-bold text-sm text-slate-900 mb-3">Registrar Movimiento de Caja (Ingreso / Gastos)</h4>
+                    <h4 class="font-bold text-sm text-slate-900 mb-3">Registrar Movimiento Extra (Gasto / Ingreso Manual)</h4>
                     <form onsubmit="addCashMovement(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
                         <select id="mov-type" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
                             <option value="egreso">🔴 Egreso / Gasto (-)</option>
                             <option value="ingreso">🟢 Ingreso Manual (+)</option>
                         </select>
-                        <input type="text" id="mov-desc" required placeholder="Concepto (ej. Bolsa, Flete, Insumo)" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                        <input type="text" id="mov-desc" required placeholder="Concepto (ej. Insumo, Flete)" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs">
                         <input type="number" id="mov-amount" required placeholder="Monto ($)" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs">
-                        <button type="submit" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl py-2 cursor-pointer transition">Registrar Movimiento</button>
+                        <button type="submit" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl py-2 cursor-pointer transition">Registrar</button>
                     </form>
                 </div>
 
-                <!-- HISTORIAL DE MOVIMIENTOS Y VENTAS -->
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm">
                         <thead class="bg-slate-100 text-slate-600 uppercase text-xs">
                             <tr>
-                                <th class="p-3 rounded-l-xl">Fecha / Hora</th>
-                                <th class="p-3">Tipo / Cliente</th>
-                                <th class="p-3">Detalle / Concepto</th>
-                                <th class="p-3 text-right rounded-r-xl">Monto ($)</th>
+                                <th class="p-3 rounded-l-xl">Fecha</th>
+                                <th class="p-3">Cliente / Tipo</th>
+                                <th class="p-3">Detalle</th>
+                                <th class="p-3">Estado / Cobro</th>
+                                <th class="p-3 text-right rounded-r-xl">Total ($)</th>
                             </tr>
                         </thead>
-                        <tbody id="admin-sales-list" class="divide-y divide-slate-100">
-                            <!-- Filas de ventas y caja -->
-                        </tbody>
+                        <tbody id="admin-sales-list" class="divide-y divide-slate-100"></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- TAB 3: AGREGAR NUEVO PRODUCTO -->
+            <!-- TAB 3: AGREGAR PRODUCTO -->
             <div id="admin-tab-add" class="hidden max-w-lg mx-auto">
                 <form onsubmit="addNewProduct(event)" class="space-y-4">
                     <div>
@@ -268,16 +233,16 @@
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-xs font-semibold text-slate-700 mb-1">Precio ($)</label>
-                            <input type="number" id="new-p-price" required placeholder="Ej. 4900" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <input type="number" id="new-p-price" required placeholder="Ej. 4900" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-700 mb-1">Stock Inicial</label>
-                            <input type="number" id="new-p-stock" required placeholder="Ej. 10" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <input type="number" id="new-p-stock" required placeholder="Ej. 10" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm">
                         </div>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">Categoría</label>
-                        <select id="new-p-cat" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <select id="new-p-cat" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm">
                             <option value="color">Colores 500g</option>
                             <option value="balde">Balde</option>
                             <option value="1kg">1 Kg</option>
@@ -286,70 +251,64 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre del archivo de foto (Ej: balde.jpg)</label>
-                        <input type="text" id="new-p-image" placeholder="ej. balde.jpg o https://..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Foto (Ej: balde.jpg)</label>
+                        <input type="text" id="new-p-image" placeholder="ej. balde.jpg" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">Descripción corta</label>
-                        <input type="text" id="new-p-desc" placeholder="Ej. Pasta de forrado flexible" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Descripción</label>
+                        <input type="text" id="new-p-desc" placeholder="Ej. Pasta elástica" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm">
                     </div>
-                    <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 rounded-xl transition cursor-pointer">
-                        Guardar Producto
-                    </button>
+                    <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 rounded-xl transition cursor-pointer">Guardar</button>
                 </form>
             </div>
 
             <div class="mt-8 pt-4 border-t border-slate-100 flex justify-between items-center text-xs">
-                <button onclick="resetAllData()" class="text-rose-500 hover:underline cursor-pointer">⚠️ Borrar todo y restaurar productos de fábrica</button>
+                <button onclick="resetAllData()" class="text-rose-500 hover:underline cursor-pointer">⚠️ Borrar todo y restaurar</button>
                 <button onclick="closeAdminModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold px-4 py-2 rounded-xl cursor-pointer">Cerrar</button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT DE FUNCIONAMIENTO CON CONEXIÓN DIRECTA A GITHUB -->
+    <!-- SCRIPT DE FUNCIONAMIENTO -->
     <script>
         const ADMIN_PASSWORD = "8266";
-
-        // CREDENCIALES DE GITHUB INTEGRADAS
         const GH_USER = "impulsodigitalredesok-debug";
         const GH_REPO = "pasta-decor";
         const GH_TOKEN = "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";
 
-        // PRODUCTOS DE FABRICA CON NOMBRES DE FOTOS LOCALES
         const defaultProducts = [
-            { id: 1, name: "Balde 5kg Súper Blanco", price: 39000, stock: 10, category: "balde", desc: "Pasta Décor para forrado de gran volumen. Súper blanco.", image: "balde.jpg" },
-            { id: 2, name: "Paquete 1kg Color Blanco", price: 7900, stock: 15, category: "1kg", desc: "Pasta Décor formato 1kg. Súper elástica.", image: "blanco1.jpg" },
-            { id: 3, name: "Paquete 500g Color Blanco", price: 4200, stock: 20, category: "500g", desc: "Pasta Décor formato 500g. Color Blanco tradicional.", image: "blancom.jpg" },
-            { id: 4, name: "Paquete 500g Pasta de Goma Blanca", price: 4900, stock: 12, category: "goma", desc: "Ideal para modelado de flores, figuras y secado rápido.", image: "pasta de goma.jpg" },
-            
-            // COLORES 500G A $4.900
-            { id: 5, name: "Paquete 500g Color NEGRO", price: 4900, stock: 8, category: "color", desc: "Pasta Décor 500g. Pigmento intenso.", image: "negro.jpg" },
-            { id: 6, name: "Paquete 500g Color ROJO", price: 4900, stock: 8, category: "color", desc: "Pasta Décor 500g. Rojo radiante.", image: "rojo.jpg" },
-            { id: 7, name: "Paquete 500g Color AZUL", price: 4900, stock: 8, category: "color", desc: "Pasta Décor 500g. Azul intenso.", image: "azul.jpg" },
-            { id: 8, name: "Paquete 500g Color VIOLETA", price: 4900, stock: 8, category: "color", desc: "Pasta Décor 500g.", image: "azul.jpg" },
-            { id: 9, name: "Paquete 500g Color AMARILLO", price: 4900, stock: 8, category: "color", desc: "Pasta Décor 500g.", image: "amarillo.jpg" },
-            { id: 10, name: "Paquete 500g Color FUCSIA", price: 4900, stock: 8, category: "color", desc: "Pasta Décor 500g.", image: "fucsia.jpg" },
-            { id: 11, name: "Paquete 500g Color MARRON", price: 4900, stock: 8, category: "color", desc: "Pasta Décor 500g.", image: "marron.jpg" },
-            { id: 12, name: "Paquete 500g Color NARANJA", price: 4900, stock: 8, category: "color", desc: "Pasta Décor 500g.", image: "naranja.jpg" },
-            { id: 13, name: "Paquete 500g Color VERDE", price: 4900, stock: 8, category: "color", desc: "Pasta Décor 500g.", image: "verde.jpg" },
-            { id: 14, name: "Paquete 500g Color CELESTE", price: 4900, stock: 8, category: "color", desc: "Pasta Décor 500g.", image: "celeste.jpg" },
-            { id: 15, name: "Paquete 500g Color ROSA", price: 4900, stock: 8, category: "color", desc: "Pasta Décor 500g.", image: "rosa.jpg" }
+            { id: 1, name: "Balde 5kg Súper Blanco", price: 39000, stock: 10, category: "balde", desc: "Pasta Décor para forrado de gran volumen.", image: "balde.jpg" },
+            { id: 2, name: "Paquete 1kg Color Blanco", price: 7900, stock: 15, category: "1kg", desc: "Pasta Décor formato 1kg.", image: "blanco1.jpg" },
+            { id: 3, name: "Paquete 500g Color Blanco", price: 4200, stock: 20, category: "500g", desc: "Pasta Décor formato 500g.", image: "blancom.jpg" },
+            { id: 4, name: "Paquete 500g Pasta de Goma Blanca", price: 4900, stock: 12, category: "goma", desc: "Ideal para modelado de flores.", image: "pasta de goma.jpg" },
+            { id: 5, name: "Paquete 500g Color NEGRO", price: 4900, stock: 8, category: "color", desc: "Pigmento intenso.", image: "negro.jpg" },
+            { id: 6, name: "Paquete 500g Color ROJO", price: 4900, stock: 8, category: "color", desc: "Rojo radiante.", image: "rojo.jpg" },
+            { id: 7, name: "Paquete 500g Color AZUL", price: 4900, stock: 8, category: "color", desc: "Azul intenso.", image: "azul.jpg" },
+            { id: 8, name: "Paquete 500g Color VIOLETA", price: 4900, stock: 8, category: "color", desc: "Violeta.", image: "azul.jpg" },
+            { id: 9, name: "Paquete 500g Color AMARILLO", price: 4900, stock: 8, category: "color", desc: "Amarillo.", image: "amarillo.jpg" },
+            { id: 10, name: "Paquete 500g Color FUCSIA", price: 4900, stock: 8, category: "color", desc: "Fucsia.", image: "fucsia.jpg" },
+            { id: 11, name: "Paquete 500g Color MARRON", price: 4900, stock: 8, category: "color", desc: "Marrón.", image: "marron.jpg" },
+            { id: 12, name: "Paquete 500g Color NARANJA", price: 4900, stock: 8, category: "color", desc: "Naranja.", image: "naranja.jpg" },
+            { id: 13, name: "Paquete 500g Color VERDE", price: 4900, stock: 8, category: "color", desc: "Verde.", image: "verde.jpg" },
+            { id: 14, name: "Paquete 500g Color CELESTE", price: 4900, stock: 8, category: "color", desc: "Celeste.", image: "celeste.jpg" },
+            { id: 15, name: "Paquete 500g Color ROSA", price: 4900, stock: 8, category: "color", desc: "Rosa.", image: "rosa.jpg" }
         ];
 
         let products = JSON.parse(localStorage.getItem('store_products')) || defaultProducts;
         let sales = JSON.parse(localStorage.getItem('store_sales')) || [];
         let movements = JSON.parse(localStorage.getItem('store_movements')) || [];
         let cart = [];
+        let selectQuantities = {}; // Cantidades seleccionadas en la tarjeta del producto
         let currentFilterCat = 'todos';
 
         function saveAll() {
             localStorage.setItem('store_products', JSON.stringify(products));
             localStorage.setItem('store_sales', JSON.stringify(sales));
             localStorage.setItem('store_movements', JSON.stringify(movements));
-            syncToGitHub(); // Sincroniza automáticamente en segundo plano a la nube
+            syncToGitHub();
         }
 
-        // --- SINCRONIZACIÓN AUTOMÁTICA CON GITHUB ---
+        // --- SINCRONIZACIÓN AUTOMÁTICA GITHUB CORREGIDA ---
         async function syncToGitHub() {
             const indicator = document.getElementById('sync-status');
             if (indicator) {
@@ -365,37 +324,32 @@
                 const base64Content = btoa(unescape(encodeURIComponent(fullSource)));
                 const apiUrl = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/index.html`;
 
-                // 1. Obtener el SHA actual del archivo en GitHub
                 const getRes = await fetch(apiUrl, {
-                    headers: { 'Authorization': `token ${GH_TOKEN}` }
+                    headers: { 'Authorization': `Bearer ${GH_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
                 });
+                if (!getRes.ok) throw new Error("Error de conexión GitHub");
                 const fileData = await getRes.json();
-                const sha = fileData.sha;
 
-                // 2. Hacer commit de actualización
                 const putRes = await fetch(apiUrl, {
                     method: 'PUT',
                     headers: {
-                        'Authorization': `token ${GH_TOKEN}`,
+                        'Authorization': `Bearer ${GH_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json',
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        message: "Actualización automática de stock y precios desde Admin",
+                        message: "Actualización automática",
                         content: base64Content,
-                        sha: sha
+                        sha: fileData.sha
                     })
                 });
 
-                if (putRes.ok) {
-                    if (indicator) {
-                        indicator.innerText = "☁️ Sincronizado en la Nube";
-                        indicator.className = "text-[10px] bg-emerald-900 text-emerald-300 px-2.5 py-1 rounded-full font-bold inline-block";
-                    }
-                } else {
-                    throw new Error("Error al guardar en GitHub");
+                if (putRes.ok && indicator) {
+                    indicator.innerText = "☁️ Sincronizado en la Nube";
+                    indicator.className = "text-[10px] bg-emerald-900 text-emerald-300 px-2.5 py-1 rounded-full font-bold inline-block";
                 }
             } catch (err) {
-                console.error("Error de sincronización:", err);
+                console.error(err);
                 if (indicator) {
                     indicator.innerText = "⚠️ Error de Sincro";
                     indicator.className = "text-[10px] bg-rose-900 text-rose-300 px-2.5 py-1 rounded-full font-bold inline-block";
@@ -403,21 +357,15 @@
             }
         }
 
-        // --- COPIAR TEXTO AL PORTAPAPELES ---
         function copyText(elementId, btn) {
             const text = document.getElementById(elementId).innerText;
             navigator.clipboard.writeText(text).then(() => {
                 const orig = btn.innerText;
                 btn.innerText = "✓ ¡Copiado!";
-                btn.classList.add("bg-emerald-300", "text-emerald-900");
-                setTimeout(() => {
-                    btn.innerText = orig;
-                    btn.classList.remove("bg-emerald-300", "text-emerald-900");
-                }, 2000);
+                setTimeout(() => btn.innerText = orig, 2000);
             });
         }
 
-        // --- FILTROS Y BÚSQUEDA ---
         function filterCategory(cat) {
             currentFilterCat = cat;
             ['todos', 'balde', '1kg', '500g', 'color', 'goma'].forEach(c => {
@@ -428,6 +376,14 @@
                         : "px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer transition";
                 }
             });
+            renderProducts();
+        }
+
+        // --- BOTONES DE CANTIDAD EN CADA PRODUCTO ---
+        function changeCardQty(id, delta) {
+            if (!selectQuantities[id]) selectQuantities[id] = 1;
+            selectQuantities[id] += delta;
+            if (selectQuantities[id] < 1) selectQuantities[id] = 1;
             renderProducts();
         }
 
@@ -443,12 +399,13 @@
             });
 
             if (filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">No se encontraron productos con esa búsqueda.</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">No se encontraron productos.</div>`;
                 return;
             }
             
             filtered.forEach(p => {
                 const isOut = p.stock <= 0;
+                const qty = selectQuantities[p.id] || 1;
                 grid.innerHTML += `
                     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
                         <div class="h-44 bg-slate-100 relative">
@@ -462,9 +419,16 @@
                                 <h3 class="font-bold text-lg text-slate-900">${p.name}</h3>
                                 <p class="text-slate-500 text-sm mt-1 mb-4">${p.desc}</p>
                             </div>
-                            <div class="flex items-center justify-between pt-4 border-t border-slate-100">
-                                <span class="text-xl font-extrabold text-slate-900">$${p.price.toLocaleString()}</span>
-                                <button onclick="addToCart(${p.id})" ${isOut ? 'disabled' : ''} class="px-4 py-2 rounded-xl text-sm font-medium transition cursor-pointer ${isOut ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm'}">
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-xl font-extrabold text-slate-900">$${p.price.toLocaleString()}</span>
+                                    <div class="flex items-center border border-slate-200 rounded-xl bg-slate-50 px-1">
+                                        <button onclick="changeCardQty(${p.id}, -1)" class="w-7 h-7 flex items-center justify-center font-bold text-slate-600 cursor-pointer">-</button>
+                                        <span class="px-2 text-xs font-bold text-slate-800">${qty}</span>
+                                        <button onclick="changeCardQty(${p.id}, 1)" class="w-7 h-7 flex items-center justify-center font-bold text-slate-600 cursor-pointer">+</button>
+                                    </div>
+                                </div>
+                                <button onclick="addToCartWithQty(${p.id})" ${isOut ? 'disabled' : ''} class="w-full py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer ${isOut ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm'}">
                                     ${isOut ? 'Agotado' : 'Añadir al Carrito'}
                                 </button>
                             </div>
@@ -474,39 +438,34 @@
             });
         }
 
-        function filterProducts() {
-            renderProducts();
-        }
+        function filterProducts() { renderProducts(); }
 
         function togglePaymentInfo() {
             const payVal = document.getElementById('cust-payment').value;
             const infoBox = document.getElementById('payment-info-box');
-
-            if (payVal === 'Transferencia Bancaria') {
-                infoBox.classList.remove('hidden');
-            } else {
-                infoBox.classList.add('hidden');
-            }
+            if (payVal === 'Transferencia Bancaria') infoBox.classList.remove('hidden');
+            else infoBox.classList.add('hidden');
         }
 
-        // --- LÓGICA DE CARRITO ---
-        function addToCart(id) {
+        function addToCartWithQty(id) {
             const product = products.find(p => p.id === id);
+            const qtyToAdd = selectQuantities[id] || 1;
             const cartItem = cart.find(c => c.id === id);
-            
-            const currentQty = cartItem ? cartItem.quantity : 0;
-            if (currentQty >= product.stock) {
-                alert("No hay más unidades disponibles de este producto.");
+            const currentQtyInCart = cartItem ? cartItem.quantity : 0;
+
+            if (currentQtyInCart + qtyToAdd > product.stock) {
+                alert("Superas el stock disponible.");
                 return;
             }
 
             if (cartItem) {
-                cartItem.quantity++;
+                cartItem.quantity += qtyToAdd;
             } else {
-                cart.push({ ...product, quantity: 1 });
+                cart.push({ ...product, quantity: qtyToAdd });
             }
+            selectQuantities[id] = 1; // Resetea selector
             updateCartUI();
-            
+
             const counter = document.getElementById('cart-counter');
             counter.classList.add('scale-125');
             setTimeout(() => counter.classList.remove('scale-125'), 200);
@@ -515,21 +474,15 @@
         function changeCartQty(id, delta) {
             const cartItem = cart.find(c => c.id === id);
             const product = products.find(p => p.id === id);
-
             if (!cartItem) return;
 
             if (delta > 0 && cartItem.quantity >= product.stock) {
-                alert("Alcanzaste el límite de unidades disponibles para este producto.");
+                alert("Límite de stock alcanzado.");
                 return;
             }
-
             cartItem.quantity += delta;
-
-            if (cartItem.quantity <= 0) {
-                removeFromCart(id);
-            } else {
-                updateCartUI();
-            }
+            if (cartItem.quantity <= 0) cart = cart.filter(c => c.id !== id);
+            updateCartUI();
         }
 
         function removeFromCart(id) {
@@ -541,7 +494,6 @@
             const itemsContainer = document.getElementById('cart-items');
             const counter = document.getElementById('cart-counter');
             const totalEl = document.getElementById('cart-total');
-            
             itemsContainer.innerHTML = '';
             let total = 0;
             let totalQty = 0;
@@ -560,18 +512,17 @@
                             </div>
                             <div class="flex items-center space-x-2">
                                 <div class="flex items-center border border-slate-200 rounded-xl bg-slate-50 px-1">
-                                    <button onclick="changeCartQty(${item.id}, -1)" class="w-6 h-6 flex items-center justify-center text-slate-600 font-bold hover:text-slate-900 cursor-pointer">-</button>
+                                    <button onclick="changeCartQty(${item.id}, -1)" class="w-6 h-6 flex items-center justify-center font-bold text-slate-600">-</button>
                                     <span class="px-2 text-xs font-bold text-slate-800">${item.quantity}</span>
-                                    <button onclick="changeCartQty(${item.id}, 1)" class="w-6 h-6 flex items-center justify-center text-slate-600 font-bold hover:text-slate-900 cursor-pointer">+</button>
+                                    <button onclick="changeCartQty(${item.id}, 1)" class="w-6 h-6 flex items-center justify-center font-bold text-slate-600">+</button>
                                 </div>
                                 <span class="font-bold text-slate-900 w-20 text-right">$${(item.price * item.quantity).toLocaleString()}</span>
-                                <button onclick="removeFromCart(${item.id})" class="text-rose-400 hover:text-rose-600 text-xs pl-1 cursor-pointer">🗑️</button>
+                                <button onclick="removeFromCart(${item.id})" class="text-rose-400 hover:text-rose-600 text-xs pl-1">🗑️</button>
                             </div>
                         </div>
                     `;
                 });
             }
-
             counter.innerText = totalQty;
             totalEl.innerText = '$' + total.toLocaleString();
         }
@@ -580,11 +531,11 @@
             document.getElementById('cart-modal').classList.toggle('hidden');
         }
 
-        // --- PROCESO DE COMPRA Y WHATSAPP ---
+        // --- PROCESO DE COMPRA Y WHATSAPP DIRECTO ---
         function processCheckout(e) {
             e.preventDefault();
             if (cart.length === 0) {
-                alert("Tu carrito está vacío. Añadí productos antes de confirmar.");
+                alert("El carrito está vacío.");
                 return;
             }
 
@@ -592,15 +543,17 @@
             const payment = document.getElementById('cust-payment').value;
             let total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-            // DESCUENTO DE STOCK EXACTO SEGÚN LA CANTIDAD ELEGIDA EN EL CARRITO
+            // Descontar stock
             products = products.map(p => {
                 const cItem = cart.find(c => c.id === p.id);
                 return cItem ? { ...p, stock: Math.max(0, p.stock - cItem.quantity) } : p;
             });
 
+            // Guardar pedido como PENDIENTE
             const newSale = {
-                id: Math.floor(1000 + Math.random() * 9000),
+                id: Date.now(),
                 type: 'venta',
+                status: 'pendiente', // pendiente o cobrado
                 date: new Date().toLocaleString('es-AR'),
                 customer: name,
                 payment: payment,
@@ -608,46 +561,33 @@
                 items: cart.map(i => `${i.quantity}x ${i.name}`).join(', ')
             };
             sales.unshift(newSale);
-
             saveAll();
             renderProducts();
 
-            // Llenar resumen modal post-compra
-            document.getElementById('summary-id').innerText = '#' + newSale.id;
-            document.getElementById('summary-name').innerText = name;
-            document.getElementById('summary-payment').innerText = payment;
-            document.getElementById('summary-total').innerText = '$' + total.toLocaleString();
-
-            let text = `*NUEVO PEDIDO PASTA DÉCOR #${newSale.id}*\n\n👤 *Cliente:* ${name}\n💳 *Forma de Pago:* ${payment}\n🛒 *Detalle:* ${newSale.items}\n\n💰 *TOTAL:* $${total.toLocaleString()}`;
+            // Mensaje de WhatsApp sin número de pedido
+            let text = `*NUEVO PEDIDO PASTA DÉCOR*\n\n👤 *Cliente:* ${name}\n💳 *Pago:* ${payment}\n🛒 *Detalle:* ${newSale.items}\n\n💰 *TOTAL:* $${total.toLocaleString()}`;
             
-            // Número de WhatsApp configurado
-            document.getElementById('whatsapp-btn-link').href = `https://wa.me/5492364351764?text=${encodeURIComponent(text)}`;
-
             toggleCart();
-            document.getElementById('success-modal').classList.remove('hidden');
-
-            cart = [];
-            updateCartUI();
             document.getElementById('checkout-form').reset();
             document.getElementById('payment-info-box').classList.add('hidden');
+            cart = [];
+            updateCartUI();
+
+            // Redirección directa a WhatsApp
+            window.open(`https://wa.me/5492364351764?text=${encodeURIComponent(text)}`, '_blank');
         }
 
-        function closeSuccessModal() {
-            document.getElementById('success-modal').classList.add('hidden');
-        }
-
-        // --- MOVIMIENTOS MANUALES DE CAJA (GASTOS / INGRESOS) ---
         function addCashMovement(e) {
             e.preventDefault();
             const type = document.getElementById('mov-type').value;
             const desc = document.getElementById('mov-desc').value;
             const amount = parseFloat(document.getElementById('mov-amount').value);
-
             if (!amount || amount <= 0) return;
 
             const newMov = {
                 id: Date.now(),
                 type: type,
+                status: 'cobrado',
                 date: new Date().toLocaleString('es-AR'),
                 customer: type === 'egreso' ? '🔴 GASTO / EGRESO' : '🟢 INGRESO MANUAL',
                 items: desc,
@@ -660,9 +600,8 @@
             e.target.reset();
         }
 
-        // --- PANEL ADMIN ---
         function openAdminModal() {
-            const pwd = prompt("Ingresá la contraseña de administrador:");
+            const pwd = prompt("Contraseña de administrador:");
             if (pwd === ADMIN_PASSWORD) {
                 document.getElementById('admin-modal').classList.remove('hidden');
                 renderAdminData();
@@ -671,29 +610,16 @@
             }
         }
 
-        function closeAdminModal() {
-            document.getElementById('admin-modal').classList.add('hidden');
-        }
+        function closeAdminModal() { document.getElementById('admin-modal').classList.add('hidden'); }
 
         function switchAdminTab(tab) {
             document.getElementById('admin-tab-stock').classList.add('hidden');
             document.getElementById('admin-tab-sales').classList.add('hidden');
             document.getElementById('admin-tab-add').classList.add('hidden');
+            ['stock', 'sales', 'add'].forEach(t => document.getElementById('tab-btn-' + t).className = "pb-2 font-bold text-sm text-slate-400 hover:text-slate-700 cursor-pointer");
 
-            document.getElementById('tab-btn-stock').className = "pb-2 font-bold text-sm text-slate-400 hover:text-slate-700 cursor-pointer";
-            document.getElementById('tab-btn-sales').className = "pb-2 font-bold text-sm text-slate-400 hover:text-slate-700 cursor-pointer";
-            document.getElementById('tab-btn-add').className = "pb-2 font-bold text-sm text-slate-400 hover:text-slate-700 cursor-pointer";
-
-            if (tab === 'stock') {
-                document.getElementById('admin-tab-stock').classList.remove('hidden');
-                document.getElementById('tab-btn-stock').className = "pb-2 font-bold text-sm border-b-2 border-emerald-600 text-emerald-600 cursor-pointer";
-            } else if (tab === 'sales') {
-                document.getElementById('admin-tab-sales').classList.remove('hidden');
-                document.getElementById('tab-btn-sales').className = "pb-2 font-bold text-sm border-b-2 border-emerald-600 text-emerald-600 cursor-pointer";
-            } else if (tab === 'add') {
-                document.getElementById('admin-tab-add').classList.remove('hidden');
-                document.getElementById('tab-btn-add').className = "pb-2 font-bold text-sm border-b-2 border-emerald-600 text-emerald-600 cursor-pointer";
-            }
+            document.getElementById('admin-tab-' + tab).classList.remove('hidden');
+            document.getElementById('tab-btn-' + tab).className = "pb-2 font-bold text-sm border-b-2 border-emerald-600 text-emerald-600 cursor-pointer";
         }
 
         function renderAdminData() {
@@ -706,55 +632,65 @@
                 stockBody.innerHTML += `
                     <tr class="hover:bg-slate-50">
                         <td class="p-3 font-semibold text-slate-900">${p.name}</td>
-                        <td class="p-3">
-                            <input type="number" value="${p.price}" onchange="updatePrice(${p.id}, this.value)" class="w-28 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                        </td>
-                        <td class="p-3">
-                            <span class="font-bold px-2 py-1 rounded text-xs ${p.stock <= 0 ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'}">
-                                ${p.stock} unidades
-                            </span>
-                        </td>
+                        <td class="p-3"><input type="number" value="${p.price}" onchange="updatePrice(${p.id}, this.value)" class="w-28 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-sm font-semibold"></td>
+                        <td class="p-3"><span class="font-bold px-2 py-1 rounded text-xs ${p.stock <= 0 ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'}">${p.stock} u.</span></td>
                         <td class="p-3 text-right space-x-1">
-                            <button onclick="adjustStock(${p.id}, -1)" class="w-7 h-7 bg-slate-200 hover:bg-slate-300 font-bold rounded text-slate-800 cursor-pointer">-</button>
-                            <button onclick="adjustStock(${p.id}, 1)" class="w-7 h-7 bg-slate-200 hover:bg-slate-300 font-bold rounded text-slate-800 cursor-pointer">+</button>
-                            <button onclick="deleteProduct(${p.id})" class="ml-2 px-2 py-1 bg-rose-100 hover:bg-rose-200 text-rose-700 rounded text-xs font-semibold cursor-pointer">🗑️</button>
+                            <button onclick="adjustStock(${p.id}, -1)" class="w-7 h-7 bg-slate-200 font-bold rounded cursor-pointer">-</button>
+                            <button onclick="adjustStock(${p.id}, 1)" class="w-7 h-7 bg-slate-200 font-bold rounded cursor-pointer">+</button>
+                            <button onclick="deleteProduct(${p.id})" class="ml-2 px-2 py-1 bg-rose-100 text-rose-700 rounded text-xs">🗑️</button>
                         </td>
                     </tr>
                 `;
             });
-
             document.getElementById('admin-total-valuation').innerText = '$' + totalValuation.toLocaleString();
 
             const salesBody = document.getElementById('admin-sales-list');
             salesBody.innerHTML = '';
             let totalRevenue = 0;
-            let totalMovementsNet = 0;
+            let pendingCount = 0;
 
-            const allActivity = [...sales, ...movements].sort((a,b) => new Date(b.date) - new Date(a.date));
+            const allActivity = [...sales, ...movements].sort((a,b) => b.id - a.id);
 
             if (allActivity.length === 0) {
-                salesBody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-slate-400">Aún no hay ventas ni movimientos de caja registrados.</td></tr>`;
+                salesBody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-slate-400">Sin movimientos registrados.</td></tr>`;
             } else {
                 allActivity.forEach(s => {
-                    if (s.type === 'venta') totalRevenue += s.total;
-                    totalMovementsNet += s.total;
+                    if (s.type === 'venta' && s.status === 'cobrado') totalRevenue += s.total;
+                    if (s.type === 'venta' && s.status === 'pendiente') pendingCount++;
+                    if (s.status === 'cobrado' && s.type !== 'venta') totalRevenue += s.total; // Ingresos manuales
 
-                    const isNeg = s.total < 0;
+                    const isPending = s.status === 'pendiente';
                     salesBody.innerHTML += `
                         <tr class="hover:bg-slate-50">
                             <td class="p-3 text-xs text-slate-500">${s.date}</td>
-                            <td class="p-3 font-semibold ${isNeg ? 'text-rose-600' : 'text-slate-900'}">${s.customer}</td>
+                            <td class="p-3 font-semibold text-slate-900">${s.customer}</td>
                             <td class="p-3 text-xs text-slate-600 max-w-xs truncate">${s.items}</td>
-                            <td class="p-3 text-right font-bold ${isNeg ? 'text-rose-600' : 'text-emerald-700'}">
-                                ${isNeg ? '-' : ''}$${Math.abs(s.total).toLocaleString()}
+                            <td class="p-3">
+                                ${s.type === 'venta' ? `
+                                    <button onclick="toggleSaleStatus(${s.id})" class="px-2.5 py-1 rounded-full text-xs font-bold cursor-pointer transition ${isPending ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' : 'bg-emerald-100 text-emerald-800'}">
+                                        ${isPending ? '⏳ Pendiente de Cobro' : '✓ Entregado / Cobrado'}
+                                    </button>
+                                ` : `<span class="text-xs font-bold text-slate-600">Manual</span>`}
                             </td>
+                            <td class="p-3 text-right font-bold ${s.total < 0 ? 'text-rose-600' : 'text-emerald-700'}">$${s.total.toLocaleString()}</td>
                         </tr>
                     `;
                 });
             }
 
             document.getElementById('admin-total-revenue').innerText = '$' + totalRevenue.toLocaleString();
-            document.getElementById('admin-net-cash').innerText = '$' + totalMovementsNet.toLocaleString();
+            document.getElementById('admin-pending-count').innerText = pendingCount;
+        }
+
+        function toggleSaleStatus(id) {
+            sales = sales.map(s => {
+                if (s.id === id) {
+                    s.status = s.status === 'pendiente' ? 'cobrado' : 'pendiente';
+                }
+                return s;
+            });
+            saveAll();
+            renderAdminData();
         }
 
         function adjustStock(id, delta) {
@@ -765,15 +701,14 @@
         }
 
         function updatePrice(id, newPrice) {
-            const priceVal = parseFloat(newPrice) || 0;
-            products = products.map(p => p.id === id ? { ...p, price: priceVal } : p);
+            products = products.map(p => p.id === id ? { ...p, price: parseFloat(newPrice) || 0 } : p);
             saveAll();
             renderProducts();
             renderAdminData();
         }
 
         function deleteProduct(id) {
-            if (confirm("¿Estás seguro de eliminar este producto del catálogo?")) {
+            if (confirm("¿Eliminar producto?")) {
                 products = products.filter(p => p.id !== id);
                 saveAll();
                 renderProducts();
@@ -783,30 +718,25 @@
 
         function addNewProduct(e) {
             e.preventDefault();
-            const name = document.getElementById('new-p-name').value;
-            const price = parseFloat(document.getElementById('new-p-price').value);
-            const stock = parseInt(document.getElementById('new-p-stock').value);
-            const category = document.getElementById('new-p-cat').value;
-            const image = document.getElementById('new-p-image').value || 'balde.jpg';
-            const desc = document.getElementById('new-p-desc').value;
-
             const newProd = {
                 id: Date.now(),
-                name, price, stock, category, image, desc
+                name: document.getElementById('new-p-name').value,
+                price: parseFloat(document.getElementById('new-p-price').value),
+                stock: parseInt(document.getElementById('new-p-stock').value),
+                category: document.getElementById('new-p-cat').value,
+                image: document.getElementById('new-p-image').value || 'balde.jpg',
+                desc: document.getElementById('new-p-desc').value
             };
-
             products.push(newProd);
             saveAll();
             renderProducts();
             renderAdminData();
-
-            alert("¡Nuevo producto agregado con éxito!");
             switchAdminTab('stock');
             e.target.reset();
         }
 
         function resetAllData() {
-            if (confirm("¿Querés restaurar los productos por fábrica y borrar ventas?")) {
+            if (confirm("¿Restaurar valores de fábrica?")) {
                 localStorage.clear();
                 products = defaultProducts;
                 sales = [];
@@ -820,4 +750,4 @@
         renderProducts();
     </script>
 </body>
-</html>
+                                                                                                      </html>
