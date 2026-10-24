@@ -3,33 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pasta Décor - Tienda Online Repostería</title>
+    <title>Pastas Decor - Tienda Online Repostería</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- LOGO DE LA APP / ICONO AL INSTALAR EN EL CELULAR -->
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
+    <meta name="theme-color" content="#0f172a">
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
 
     <!-- HEADER -->
     <header class="bg-slate-900 text-white sticky top-0 z-30 shadow-md">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="bg-pink-500 p-2 rounded-xl text-white font-bold text-xl">✨</div>
+                <!-- LOGO OFICIAL ARRIBA A LA IZQUIERDA -->
+                <div class="w-12 h-12 bg-white rounded-full p-0.5 overflow-hidden flex-shrink-0 border-2 border-slate-700">
+                    <img src="logo.png" alt="Pastas Decor Logo" class="w-full h-full object-contain">
+                </div>
                 <div>
-                    <h1 class="text-lg font-bold tracking-tight">Pasta Décor Repostería</h1>
-                    <p class="text-xs text-slate-400">Catálogo Oficial Junín</p>
+                    <h1 class="text-base sm:text-lg font-bold tracking-tight">Pastas Decor</h1>
+                    <p class="text-[11px] text-slate-400">Cake & Craft • Junín</p>
                 </div>
             </div>
 
-            <div class="flex items-center space-x-3">
+            <div class="flex items-center space-x-2 sm:space-x-3">
                 <span id="sync-status" class="text-[10px] bg-emerald-900 text-emerald-300 px-2.5 py-1 rounded-full font-bold hidden sm:inline-block">🟢 Conectado</span>
 
-                <button onclick="openAdminModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3.5 py-2 rounded-xl border border-slate-700 flex items-center gap-1.5 transition cursor-pointer">
+                <button onclick="openAdminModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-2 rounded-xl border border-slate-700 flex items-center gap-1 transition cursor-pointer">
                     <span>⚙ Admin</span>
                 </button>
 
-                <button onclick="toggleCart()" class="relative bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl flex items-center gap-2 font-medium transition shadow-sm cursor-pointer">
+                <button onclick="toggleCart()" class="relative bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2 rounded-xl flex items-center gap-1.5 font-medium transition shadow-sm cursor-pointer text-xs sm:text-sm">
                     <span>🛒 Carrito</span>
-                    <span id="cart-counter" class="absolute -top-2 -right-2 bg-amber-500 text-slate-950 font-bold text-xs w-6 h-6 rounded-full flex items-center justify-center border-2 border-slate-900">0</span>
+                    <span id="cart-counter" class="absolute -top-2 -right-2 bg-amber-500 text-slate-950 font-bold text-xs w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center border-2 border-slate-900">0</span>
                 </button>
             </div>
         </div>
@@ -117,7 +125,7 @@
         </div>
     </div>
 
-    <!-- MODAL REDIRECCIÓN WHATSAPP CON CONTEO REGRESIVO -->
+    <!-- MODAL REDIRECCIÓN WHATSAPP -->
     <div id="redirect-modal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl space-y-4">
             <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl mx-auto">
@@ -276,8 +284,6 @@
     <!-- SCRIPT PRINCIPAL -->
     <script>
         const ADMIN_PASSWORD = "8266";
-        
-        // URL de tu Google Apps Script
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxVJ_c32fkrurA4QJhgwBVjlnGgJLgQofSOg2vkWb9Nq8PwUx1pvyIYxEyVxJBqVNjhgw/exec";
 
         const defaultProducts = [
@@ -306,7 +312,6 @@
         let currentFilterCat = 'todos';
         let currentSalesStatusFilter = 'todos';
 
-        // --- CONEXIÓN A GOOGLE SHEETS ---
         async function loadFromCloud() {
             try {
                 const res = await fetch(GOOGLE_SCRIPT_URL + "?action=read");
@@ -524,7 +529,6 @@
             document.getElementById('cart-modal').classList.toggle('hidden');
         }
 
-        // --- PROCESAR PEDIDO Y CONTEO REGRESIVO A WHATSAPP ---
         function processCheckout(e) {
             e.preventDefault();
             if (cart.length === 0) {
@@ -536,13 +540,11 @@
             const payment = document.getElementById('cust-payment').value;
             let total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-            // Descontar stock
             products = products.map(p => {
                 const cItem = cart.find(c => c.id === p.id);
                 return cItem ? { ...p, stock: Math.max(0, p.stock - cItem.quantity) } : p;
             });
 
-            // Guardar pedido
             const newSale = {
                 id: Date.now(),
                 type: 'venta',
@@ -559,7 +561,7 @@
             saveToCloud();
             renderProducts();
 
-            let text = `*NUEVO PEDIDO PASTA DÉCOR*\n\n👤 *Cliente:* ${name}\n💳 *Pago:* ${payment}\n🛒 *Detalle:* ${newSale.items}\n\n💰 *TOTAL:* $${total.toLocaleString()}`;
+            let text = `*NUEVO PEDIDO PASTAS DECOR*\n\n👤 *Cliente:* ${name}\n💳 *Pago:* ${payment}\n🛒 *Detalle:* ${newSale.items}\n\n💰 *TOTAL:* $${total.toLocaleString()}`;
             const waUrl = `https://wa.me/5492364351764?text=${encodeURIComponent(text)}`;
 
             toggleCart();
@@ -568,7 +570,6 @@
             cart = [];
             updateCartUI();
 
-            // Modal de conteo regresivo
             document.getElementById('manual-wa-link').href = waUrl;
             document.getElementById('redirect-modal').classList.remove('hidden');
 
@@ -607,6 +608,22 @@
             saveToCloud();
             renderAdminData();
             e.target.reset();
+        }
+
+        function deleteMovement(id) {
+            if (confirm("¿Eliminar este movimiento manual de caja?")) {
+                movements = movements.filter(m => m.id !== id);
+                saveToCloud();
+                renderAdminData();
+            }
+        }
+
+        function deleteSale(id) {
+            if (confirm("¿Borrar este pedido del historial?")) {
+                sales = sales.filter(s => s.id !== id);
+                saveToCloud();
+                renderAdminData();
+            }
         }
 
         function openAdminModal() {
@@ -710,24 +727,33 @@
                             <td class="p-3">
                                 ${s.type === 'venta' ? `
                                     <button onclick="toggleDeliveryStatus(${s.id})" class="px-3 py-1.5 rounded-lg font-bold text-[11px] cursor-pointer transition ${isDeliveryPending ? 'bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200' : 'bg-emerald-100 text-emerald-800 border border-emerald-300'}">
-                                        ${isDeliveryPending ? '🚚 ENTREGAR' : '✔ ENTREGADO'}
+                                        ${isDeliveryPending ? '🚚 PEND. ENTREGA' : '✔ ENTREGADO'}
                                     </button>
                                 ` : '<span class="text-slate-400">-</span>'}
                             </td>
                             <td class="p-3">
                                 ${s.type === 'venta' ? `
                                     <button onclick="togglePaymentStatus(${s.id})" class="px-3 py-1.5 rounded-lg font-bold text-[11px] cursor-pointer transition ${isPaymentPending ? 'bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200' : 'bg-emerald-100 text-emerald-800 border border-emerald-300'}">
-                                        ${isPaymentPending ? '💵 COBRAR' : '✔ COBRADO'}
+                                        ${isPaymentPending ? '💵 PEND. COBRO' : '✔ COBRADO'}
                                     </button>
                                 ` : '<span class="text-slate-400">Manual</span>'}
                             </td>
                             <td class="p-3 font-bold ${s.total < 0 ? 'text-rose-600' : 'text-slate-900'}">$${s.total.toLocaleString()}</td>
-                            <td class="p-3 text-right">
+                            <td class="p-3 text-right space-x-1">
                                 ${s.type === 'venta' && (isDeliveryPending || isPaymentPending) ? `
-                                    <button onclick="sendReminderWhatsApp('${s.customer}', '${s.items}', ${s.total})" class="px-2.5 py-1 bg-emerald-50 text-emerald-700 font-bold border border-emerald-200 rounded-lg hover:bg-emerald-100 cursor-pointer">
+                                    <button onclick="sendReminderWhatsApp(${s.id})" class="px-2.5 py-1 bg-emerald-50 text-emerald-700 font-bold border border-emerald-200 rounded-lg hover:bg-emerald-100 cursor-pointer">
                                         🔔 Recordatorio WA
                                     </button>
                                 ` : ''}
+                                ${s.type !== 'venta' ? `
+                                    <button onclick="deleteMovement(${s.id})" class="px-2 py-1 bg-rose-100 text-rose-700 rounded-lg font-bold hover:bg-rose-200 cursor-pointer">
+                                        🗑
+                                    </button>
+                                ` : `
+                                    <button onclick="deleteSale(${s.id})" class="px-2 py-1 text-slate-400 hover:text-rose-600 font-bold cursor-pointer">
+                                        🗑
+                                    </button>
+                                `}
                             </td>
                         </tr>
                     `;
@@ -747,8 +773,22 @@
             renderAdminData();
         }
 
-        function sendReminderWhatsApp(customer, items, total) {
-            let text = `*RECORDATORIO DE ENTREGA / PAGO - PASTA DÉCOR*\n\n👤 *Cliente:* ${customer}\n🛒 *Detalle:* ${items}\n💰 *Monto:* $${total.toLocaleString()}\n\nHola ${customer}, te contactamos para coordinar la entrega de tu pedido. ¡Muchas gracias!`;
+        function sendReminderWhatsApp(id) {
+            const sale = sales.find(s => s.id === id);
+            if (!sale) return;
+
+            let motive = "";
+            if (sale.deliveryStatus === 'pendiente' && sale.paymentStatus === 'pendiente') {
+                motive = "la entrega y el pago de tu pedido";
+            } else if (sale.deliveryStatus === 'pendiente') {
+                motive = "la entrega de tu pedido";
+            } else if (sale.paymentStatus === 'pendiente') {
+                motive = "el cobro/pago de tu pedido";
+            } else {
+                return;
+            }
+
+            let text = `*RECORDATORIO - PASTAS DECOR*\n\n👤 *Cliente:* ${sale.customer}\n🛒 *Detalle:* ${sale.items}\n💰 *Monto:* $${sale.total.toLocaleString()}\n\nHola ${sale.customer}, te contactamos para coordinar ${motive}. ¡Muchas gracias!`;
             window.open(`https://wa.me/5492364351764?text=${encodeURIComponent(text)}`, '_blank');
         }
 
@@ -810,4 +850,4 @@
         renderProducts();
     </script>
 </body>
-    </html>
+</html>
