@@ -16,23 +16,6 @@
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
 
-    <!-- CARTEL FLOTANTE DE INSTALACIÓN -->
-    <div id="pwa-install-banner" class="fixed bottom-4 left-4 right-4 z-50 bg-slate-900 text-white p-4 rounded-2xl shadow-2xl border-2 border-emerald-500 hidden flex items-center justify-between gap-3">
-        <div class="flex items-center space-x-3">
-            <img src="logo.png" class="w-10 h-10 rounded-full border border-white" alt="Logo">
-            <div>
-                <h4 class="font-bold text-sm text-emerald-400">¡Instalá la App!</h4>
-                <p class="text-[11px] text-slate-300">Accedé en 1 clic desde tu celular.</p>
-            </div>
-        </div>
-        <div class="flex items-center space-x-2">
-            <button id="btn-pwa-install" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold px-3.5 py-2 rounded-xl transition cursor-pointer shadow">
-                INSTALAR
-            </button>
-            <button onclick="closePwaBanner()" class="text-slate-400 text-xs px-1">✕</button>
-        </div>
-    </div>
-
     <!-- HEADER -->
     <header class="bg-slate-900 text-white sticky top-0 z-30 shadow-md">
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -47,7 +30,6 @@
             </div>
 
             <div class="flex items-center space-x-1.5 sm:space-x-3">
-                <!-- BOTÓN PERMANENTE DE INSTALAR APP -->
                 <button id="header-pwa-btn" onclick="triggerPWAInstall()" class="bg-emerald-700 hover:bg-emerald-600 text-white text-xs px-2.5 py-2 rounded-xl border border-emerald-500 font-bold flex items-center gap-1 transition cursor-pointer">
                     <span>📲 Instalar App</span>
                 </button>
@@ -63,6 +45,25 @@
             </div>
         </div>
     </header>
+
+    <!-- CARTEL GRANDE Y LLAMATIVO ARRIBA (DEBAJO DEL HEADER) -->
+    <div id="pwa-install-banner" class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-4 shadow-lg border-b-4 border-emerald-400 hidden flex flex-col sm:flex-row items-center justify-between gap-4 max-w-7xl mx-auto w-full my-4 px-4 rounded-2xl">
+        <div class="flex items-center space-x-3 text-center sm:text-left">
+            <div class="w-14 h-14 bg-white rounded-full p-1 flex-shrink-0 shadow-md">
+                <img src="logo.png" class="w-full h-full object-contain rounded-full" alt="Logo">
+            </div>
+            <div>
+                <h4 class="font-black text-base sm:text-lg">¡Instalá la App de Pastas Decor en tu Celular! 📲</h4>
+                <p class="text-xs sm:text-sm text-emerald-100">Accedé al catálogo y hacé tus pedidos más rápido con un solo toque.</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-3 w-full sm:w-auto justify-end">
+            <button id="btn-pwa-install" class="bg-white text-emerald-900 hover:bg-emerald-50 font-extrabold text-sm px-6 py-3 rounded-xl transition shadow-lg cursor-pointer w-full sm:w-auto text-center">
+                ✨ ¡INSTALAR AHORA!
+            </button>
+            <button onclick="closePwaBanner()" class="text-emerald-200 hover:text-white font-bold text-lg px-2">✕</button>
+        </div>
+    </div>
 
     <!-- CONTENIDO PRINCIPAL -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-8">
@@ -294,7 +295,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT PRINCIPAL CON INSTALACIÓN PWA MEJORADA -->
+    <!-- SCRIPT PRINCIPAL -->
     <script>
         const ADMIN_PASSWORD = "8266";
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxVJ_c32fkrurA4QJhgwBVjlnGgJLgQofSOg2vkWb9Nq8PwUx1pvyIYxEyVxJBqVNjhgw/exec";
@@ -318,7 +319,7 @@
                 }
                 deferredPrompt = null;
             } else {
-                alert("Para instalar la app en tu celular:\n\n👉 En Android (Chrome): Tocá los 3 puntos arriba a la derecha y elegí 'Añadir a la pantalla de inicio'.\n\n👉 En iPhone (Safari): Tocá el botón Compartir ⬆ y elegí 'Agregar a pantalla principal'.");
+                alert("Para instalar la app:\n\n👉 En Android (Chrome): Tocá los 3 puntos arriba a la derecha y elegí 'Añadir a la pantalla de inicio'.\n\n👉 En iPhone (Safari): Tocá el botón Compartir ⬆ y elegí 'Agregar a pantalla principal'.");
             }
         }
 
