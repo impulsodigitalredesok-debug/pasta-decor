@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pastas Decor - Tienda Online Repostería</title>
     <!-- Manifest PWA -->
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Pastas%20Decor%22,%22short_name%22:%22PastasDecor%22,%22start_url%22:%22/%22,%22display%22:%22standalone%22,%22background_color%22:%22%230f172a%22,%22theme_color%22:%22%230f172a%22,%22icons%22:[{%22src%22:%22logo.png%22,%22sizes%22:%22192x192%22,%22type%22:%22image/png%22}]}"/>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- LOGO DE LA APP / ICONO AL INSTALAR EN EL CELULAR -->
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="apple-touch-icon" href="logo.png">
     <meta name="theme-color" content="#0f172a">
@@ -42,7 +41,7 @@
         </div>
     </header>
 
-    <!-- CARTEL GRANDE DE INSTALACIÓN PARA CLIENTES -->
+    <!-- BANNER DE INSTALACIÓN -->
     <div id="pwa-install-banner" class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-4 shadow-lg border-b-4 border-emerald-400 hidden flex flex-col sm:flex-row items-center justify-between gap-4 max-w-7xl mx-auto w-full my-4 px-4 rounded-2xl">
         <div class="flex items-center space-x-3 text-center sm:text-left">
             <div class="w-14 h-14 bg-white rounded-full p-1 flex-shrink-0 shadow-md">
@@ -94,7 +93,7 @@
         <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     </main>
 
-    <!-- MODAL DEL CARRITO / CHECKOUT -->
+    <!-- MODAL CARRITO -->
     <div id="cart-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button onclick="toggleCart()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 font-bold cursor-pointer text-lg">✕</button>
@@ -136,14 +135,14 @@
                     </div>
                 </div>
 
-                <button type="submit" id="btn-confirm-order" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl transition shadow cursor-pointer flex items-center justify-center gap-2 text-sm">
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl transition shadow cursor-pointer flex items-center justify-center gap-2 text-sm">
                     <span>CONFIRMAR PEDIDO Y ENVIAR POR WHATSAPP</span>
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- MODAL REDIRECCIÓN WHATSAPP -->
+    <!-- MODAL WHATSAPP -->
     <div id="redirect-modal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl space-y-4">
             <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl mx-auto">💬</div>
@@ -152,11 +151,10 @@
         </div>
     </div>
 
-    <!-- PANEL DE ADMINISTRACIÓN TIPO AMBOS MUNDOS -->
+    <!-- PANEL DE ADMINISTRACIÓN -->
     <div id="admin-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-6xl w-full p-6 shadow-2xl relative max-h-[92vh] overflow-y-auto flex flex-col">
             
-            <!-- CABECERA ADMIN Y SALIR -->
             <div class="flex items-center justify-between pb-4 border-b border-slate-200 mb-6">
                 <div>
                     <h3 class="text-xl font-extrabold text-slate-900">Panel de Administración</h3>
@@ -170,7 +168,7 @@
                 </div>
             </div>
 
-            <!-- RESUMEN EJECUTIVO SUPERIOR -->
+            <!-- RESUMEN -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
                 <div class="bg-emerald-50 border border-emerald-200 p-3.5 rounded-2xl">
                     <span class="text-[11px] text-emerald-700 font-medium block">Total Recaudado</span>
@@ -190,7 +188,7 @@
                 </div>
             </div>
 
-            <!-- BOTONES DE NAVEGACIÓN ESTILO AMBOS MUNDOS -->
+            <!-- BOTONES TABS ADMIN -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
                 <button onclick="switchAdminTab('sales')" id="tab-btn-sales" class="p-4 rounded-2xl font-bold text-sm bg-slate-900 text-white shadow-md flex items-center justify-center gap-2 cursor-pointer transition">
                     <span>📋 Pedidos y Estados</span>
@@ -203,7 +201,7 @@
                 </button>
             </div>
 
-            <!-- SECCIÓN 1: PEDIDOS -->
+            <!-- TAB 1: PEDIDOS -->
             <div id="admin-tab-sales" class="space-y-4">
                 <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200">
                     <div class="flex flex-wrap gap-1.5">
@@ -231,7 +229,7 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN 2: CAJA Y GASTOS -->
+            <!-- TAB 2: CAJA -->
             <div id="admin-tab-box" class="space-y-6 hidden">
                 <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl">
                     <h4 class="font-bold text-xs text-slate-700 uppercase mb-3">Registrar Gasto o Ingreso Manual en Caja</h4>
@@ -261,7 +259,7 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN 3: STOCK Y PRECIOS -->
+            <!-- TAB 3: STOCK -->
             <div id="admin-tab-stock" class="space-y-6 hidden">
                 <div class="flex justify-between items-center bg-slate-50 p-4 rounded-2xl border border-slate-200">
                     <h4 class="font-bold text-xs text-slate-700 uppercase">Gestión de Productos e Inventario</h4>
@@ -283,7 +281,7 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN 4: AGREGAR PRODUCTO (OCULTO HASTA CLIC) -->
+            <!-- TAB 4: AGREGAR PRODUCTO -->
             <div id="admin-tab-add" class="hidden max-w-lg mx-auto py-4">
                 <form onsubmit="addNewProduct(event)" class="space-y-4 bg-slate-50 p-6 rounded-2xl border border-slate-200">
                     <h4 class="font-bold text-sm text-slate-900 mb-2">Crear Nuevo Ítem en el Catálogo</h4>
@@ -327,25 +325,16 @@
             </div>
 
             <div class="mt-8 pt-4 border-t border-slate-100 flex justify-between items-center text-xs">
-                <button onclick="resetAllData()" class="text-rose-500 hover:underline cursor-pointer">⚠️ Restaurar Valores de Fábrica</button>
+                <button onclick="resetLocalData()" class="text-rose-500 hover:underline cursor-pointer">⚠️ Restablecer Catálogo Local</button>
                 <button onclick="closeAdminModal()" class="bg-slate-900 hover:bg-slate-800 text-white font-bold px-6 py-2.5 rounded-xl cursor-pointer">Volver a la App</button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT PRINCIPAL -->
+    <!-- SCRIPT -->
     <script>
         const ADMIN_PASSWORD = "8266";
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwzrJCS0tm9re7kwt6faUzQRusqY-JPcF3_2cQ2viMAwLxHo5Js8J0plwtyg8GZBM7Pjw/exec";
-
-        // Registrar Service Worker para habilitar el número rojo (Badge API)
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('SW registrado con éxito', reg))
-                    .catch(err => console.log('SW error', err));
-            });
-        }
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwurYL8Yb0hmkrTtxNv4MSjf0uL6KgXUr3QZZctJHwMpGR-UUutLk3eC6SSf-PeYQwplg/exec";
 
         let deferredPrompt;
         const banner = document.getElementById('pwa-install-banner');
@@ -370,39 +359,18 @@
                 if (outcome === 'accepted' && banner) banner.classList.add('hidden');
                 deferredPrompt = null;
             } else {
-                alert("Para instalar la app en tu celular:\n\n👉 En Android (Chrome): Tocá los 3 puntos arriba a la derecha y elegí 'Añadir a la pantalla de inicio'.\n\n👉 En iPhone (Safari): Tocá el botón Compartir ⬆ y elegí 'Agregar a pantalla principal'.");
+                alert("Para instalar la app:\n\n👉 En Android: Menú de Chrome > 'Añadir a la pantalla de inicio'.");
             }
         }
-
         if (installBtn) installBtn.addEventListener('click', triggerPWAInstall);
         function closePwaBanner() { if (banner) banner.classList.add('hidden'); }
 
-        // Actualizar número rojo (Badge) en el ícono de la App instalada
-        function updateAppBadge() {
-            const pendingCount = sales.filter(s => s.type === 'venta' && (s.deliveryStatus === 'pendiente' || s.paymentStatus === 'pendiente')).length;
-            
-            if ('setAppBadge' in navigator) {
-                if (pendingCount > 0) {
-                    navigator.setAppBadge(pendingCount).catch(err => console.log(err));
-                } else {
-                    navigator.clearAppBadge().catch(err => console.log(err));
-                }
-            }
-
-            if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-                navigator.serviceWorker.controller.postMessage({
-                    type: 'UPDATE_BADGE',
-                    count: pendingCount
-                });
-            }
-        }
-
         const defaultProducts = [
-            { id: 1, name: "Balde 5kg Súper Blanco", price: 39000, stock: 10, category: "balde", desc: "Pasta Décor para forrado de gran volumen.", image: "balde.jpg" },
-            { id: 2, name: "Paquete 1kg Color Blanco", price: 7900, stock: 15, category: "1kg", desc: "Pasta Décor formato 1kg.", image: "blanco1.jpg" },
-            { id: 3, name: "Paquete 500g Color Blanco", price: 4200, stock: 20, category: "500g", desc: "Pasta Décor formato 500g.", image: "blancom.jpg" },
-            { id: 4, name: "Paquete 500g Pasta de Goma Blanca", price: 4900, stock: 12, category: "goma", desc: "Ideal para modelado de flores.", image: "pasta de goma.jpg" },
-            { id: 5, name: "Paquete 500g Color NEGRO", price: 4900, stock: 8, category: "color", desc: "Pigmento intenso.", image: "negro.jpg" },
+            { id: 1, name: "Balde 5kg Súper Blanco", price: 39000, stock: 10, category: "balde", desc: "Pasta Décor gran volumen.", image: "balde.jpg" },
+            { id: 2, name: "Paquete 1kg Color Blanco", price: 7900, stock: 15, category: "1kg", desc: "Formato 1kg.", image: "blanco1.jpg" },
+            { id: 3, name: "Paquete 500g Color Blanco", price: 4200, stock: 20, category: "500g", desc: "Formato 500g.", image: "blancom.jpg" },
+            { id: 4, name: "Paquete 500g Pasta de Goma Blanca", price: 4900, stock: 12, category: "goma", desc: "Ideal para flores.", image: "pasta de goma.jpg" },
+            { id: 5, name: "Paquete 500g Color NEGRO", price: 4900, stock: 8, category: "color", desc: "Negro intenso.", image: "negro.jpg" },
             { id: 6, name: "Paquete 500g Color ROJO", price: 4900, stock: 8, category: "color", desc: "Rojo radiante.", image: "rojo.jpg" },
             { id: 7, name: "Paquete 500g Color AZUL", price: 4900, stock: 8, category: "color", desc: "Azul intenso.", image: "azul.jpg" },
             { id: 8, name: "Paquete 500g Color VIOLETA", price: 4900, stock: 8, category: "color", desc: "Violeta.", image: "azul.jpg" },
@@ -415,7 +383,7 @@
             { id: 15, name: "Paquete 500g Color ROSA", price: 4900, stock: 8, category: "color", desc: "Rosa.", image: "rosa.jpg" }
         ];
 
-        let products = defaultProducts;
+        let products = JSON.parse(localStorage.getItem('pd_products')) || defaultProducts;
         let sales = [];
         let movements = [];
         let cart = [];
@@ -423,34 +391,52 @@
         let currentFilterCat = 'todos';
         let currentSalesStatusFilter = 'todos';
 
+        // CARGAR DESDE GOOGLE SHEETS (FILA POR FILA)
         async function loadFromCloud() {
             try {
                 const res = await fetch(GOOGLE_SCRIPT_URL + "?action=read");
                 const data = await res.json();
-                if (data && data.products) {
-                    products = data.products;
-                    sales = data.sales || [];
-                    movements = data.movements || [];
+                if (data) {
+                    if (data.sales) sales = data.sales;
+                    if (data.movements) movements = data.movements;
                     renderProducts();
-                    updateAppBadge();
+                    if (typeof renderAdminData === 'function') renderAdminData();
                 }
             } catch (err) {
-                console.error("Error al cargar desde Google Sheets:", err);
+                console.error("Error al cargar:", err);
             }
         }
 
-        async function saveToCloud() {
+        // GUARDAR FILA NUEVA
+        async function saveRowToCloud(rowObj) {
             try {
-                const payload = { products, sales, movements };
                 await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify({ action: "save_row", row: rowObj })
                 });
             } catch (err) {
-                console.error("Error al guardar en la nube:", err);
+                console.error("Error al guardar fila:", err);
             }
+        }
+
+        // ACTUALIZAR ESTADO EN FILA
+        async function updateStatusInCloud(id, deliveryStatus, paymentStatus) {
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: "update_status", id: id, deliveryStatus: deliveryStatus, paymentStatus: paymentStatus })
+                });
+            } catch (err) {
+                console.error("Error al actualizar estado:", err);
+            }
+        }
+
+        function saveProductsLocal() {
+            localStorage.setItem('pd_products', JSON.stringify(products));
         }
 
         function copyText(elementId, btn) {
@@ -518,9 +504,9 @@
                                 <div class="flex items-center justify-between mb-3">
                                     <span class="text-xl font-extrabold text-slate-900">$${p.price.toLocaleString()}</span>
                                     <div class="flex items-center border border-slate-200 rounded-xl bg-slate-50 px-1">
-                                        <button onclick="changeCardQty(${p.id}, -1)" class="w-7 h-7 flex items-center justify-center font-bold text-slate-600 hover:text-slate-900 cursor-pointer">-</button>
+                                        <button onclick="changeCardQty(${p.id}, -1)" class="w-7 h-7 flex items-center justify-center font-bold text-slate-600 cursor-pointer">-</button>
                                         <span class="px-2 text-xs font-bold text-slate-800">${qty}</span>
-                                        <button onclick="changeCardQty(${p.id}, 1)" class="w-7 h-7 flex items-center justify-center font-bold text-slate-600 hover:text-slate-900 cursor-pointer">+</button>
+                                        <button onclick="changeCardQty(${p.id}, 1)" class="w-7 h-7 flex items-center justify-center font-bold text-slate-600 cursor-pointer">+</button>
                                     </div>
                                 </div>
                                 <button onclick="addToCartWithQty(${p.id})" ${isOut ? 'disabled' : ''} class="w-full py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer ${isOut ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm'}">
@@ -560,10 +546,6 @@
             }
             selectQuantities[id] = 1;
             updateCartUI();
-
-            const counter = document.getElementById('cart-counter');
-            counter.classList.add('scale-125');
-            setTimeout(() => counter.classList.remove('scale-125'), 200);
         }
 
         function changeCartQty(id, delta) {
@@ -641,6 +623,7 @@
                 const cItem = cart.find(c => c.id === p.id);
                 return cItem ? { ...p, stock: Math.max(0, p.stock - cItem.quantity) } : p;
             });
+            saveProductsLocal();
 
             const newSale = {
                 id: Date.now(),
@@ -655,9 +638,8 @@
             };
 
             sales.unshift(newSale);
-            saveToCloud();
+            saveRowToCloud(newSale);
             renderProducts();
-            updateAppBadge();
 
             let text = `*NUEVO PEDIDO PASTAS DECOR*\n\n👤 *Cliente:* ${name}\n💳 *Pago:* ${payment}\n🛒 *Detalle:* ${newSale.items}\n\n💰 *TOTAL:* $${total.toLocaleString()}`;
             const waUrl = `https://wa.me/5492364351764?text=${encodeURIComponent(text)}`;
@@ -687,8 +669,6 @@
             const newMov = {
                 id: Date.now(),
                 type: type,
-                deliveryStatus: 'entregado',
-                paymentStatus: 'cobrado',
                 date: new Date().toLocaleString('es-AR'),
                 customer: type === 'egreso' ? '🔴 GASTO / EGRESO' : '🟢 INGRESO MANUAL',
                 items: desc,
@@ -696,7 +676,7 @@
             };
 
             movements.unshift(newMov);
-            saveToCloud();
+            saveRowToCloud(newMov);
             renderAdminData();
             e.target.reset();
         }
@@ -704,7 +684,6 @@
         function deleteMovement(id) {
             if (confirm("¿Eliminar este movimiento manual de caja?")) {
                 movements = movements.filter(m => m.id !== id);
-                saveToCloud();
                 renderAdminData();
             }
         }
@@ -712,20 +691,13 @@
         function deleteSale(id) {
             if (confirm("¿Borrar este pedido del historial?")) {
                 sales = sales.filter(s => s.id !== id);
-                saveToCloud();
                 renderAdminData();
-                updateAppBadge();
             }
         }
 
         function openAdminModal() {
             const pwd = prompt("Contraseña de administrador:");
             if (pwd === ADMIN_PASSWORD) {
-                // Solicitar permiso de notificaciones al entrar a admin (necesario para el número rojo y avisos)
-                if ('Notification' in window && Notification.permission !== 'granted') {
-                    Notification.requestPermission();
-                }
-                
                 document.getElementById('admin-modal').classList.remove('hidden');
                 renderAdminData();
             } else if (pwd !== null) {
@@ -783,7 +755,6 @@
                         <td class="p-3 text-right space-x-1">
                             <button onclick="adjustStock(${p.id}, -1)" class="w-7 h-7 bg-slate-200 font-bold rounded cursor-pointer">-</button>
                             <button onclick="adjustStock(${p.id}, 1)" class="w-7 h-7 bg-slate-200 font-bold rounded cursor-pointer">+</button>
-                            <button onclick="deleteProduct(${p.id})" class="ml-2 px-2 py-1 bg-rose-100 text-rose-700 rounded text-xs">🗑</button>
                         </td>
                     </tr>
                 `;
@@ -836,22 +807,18 @@
                             </td>
                             <td class="p-3 text-slate-600 max-w-xs truncate">${s.items}</td>
                             <td class="p-3">
-                                <button onclick="toggleDeliveryStatus(${s.id})" class="px-3 py-1.5 rounded-lg font-bold text-[11px] cursor-pointer transition ${isDeliveryPending ? 'bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200' : 'bg-emerald-100 text-emerald-800 border border-emerald-300'}">
+                                <button onclick="toggleDeliveryStatus(${s.id})" class="px-3 py-1.5 rounded-lg font-bold text-[11px] cursor-pointer transition ${isDeliveryPending ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-emerald-100 text-emerald-800 border border-emerald-300'}">
                                     ${isDeliveryPending ? '🚚 PEND. ENTREGA' : '✔ ENTREGADO'}
                                 </button>
                             </td>
                             <td class="p-3">
-                                <button onclick="togglePaymentStatus(${s.id})" class="px-3 py-1.5 rounded-lg font-bold text-[11px] cursor-pointer transition ${isPaymentPending ? 'bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200' : 'bg-emerald-100 text-emerald-800 border border-emerald-300'}">
+                                <button onclick="togglePaymentStatus(${s.id})" class="px-3 py-1.5 rounded-lg font-bold text-[11px] cursor-pointer transition ${isPaymentPending ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-emerald-100 text-emerald-800 border border-emerald-300'}">
                                     ${isPaymentPending ? '💵 PEND. COBRO' : '✔ COBRADO'}
                                 </button>
                             </td>
                             <td class="p-3 font-bold text-slate-900">$${s.total.toLocaleString()}</td>
                             <td class="p-3 text-right space-x-1">
-                                ${isDeliveryPending || isPaymentPending ? `
-                                    <button onclick="sendReminderWhatsApp(${s.id})" class="px-2.5 py-1 bg-emerald-50 text-emerald-700 font-bold border border-emerald-200 rounded-lg hover:bg-emerald-100 cursor-pointer">
-                                        🔔 WA
-                                    </button>
-                                ` : ''}
+                                <button onclick="sendReminderWhatsApp(${s.id})" class="px-2.5 py-1 bg-emerald-50 text-emerald-700 font-bold border border-emerald-200 rounded-lg hover:bg-emerald-100 cursor-pointer">🔔 WA</button>
                                 <button onclick="deleteSale(${s.id})" class="px-2 py-1 text-slate-400 hover:text-rose-600 font-bold cursor-pointer">🗑</button>
                             </td>
                         </tr>
@@ -860,7 +827,7 @@
             }
 
             if (movements.length === 0) {
-                movementsBody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-slate-400">No hay movimientos manuales de caja registrados.</td></tr>`;
+                movementsBody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-slate-400">No hay movimientos manuales de caja.</td></tr>`;
             } else {
                 movements.forEach(m => {
                     movementsBody.innerHTML += `
@@ -870,13 +837,13 @@
                                 <span class="text-slate-400 text-[10px]">${m.date}</span>
                             </td>
                             <td class="p-3">
-                                <span class="px-2.5 py-1 rounded-lg font-bold text-[11px] ${m.type === 'egreso' ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'}">
-                                    ${m.type === 'egreso' ? '🔴 Gasto / Egreso' : '🟢 Ingreso Manual'}
+                                <span class="px-2.5 py-1 rounded-lg font-bold text-[11px] ${m.total < 0 ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'}">
+                                    ${m.total < 0 ? '🔴 Gasto / Egreso' : '🟢 Ingreso Manual'}
                                 </span>
                             </td>
                             <td class="p-3 font-bold ${m.total < 0 ? 'text-rose-600' : 'text-emerald-600'}">$${m.total.toLocaleString()}</td>
                             <td class="p-3 text-right">
-                                <button onclick="deleteMovement(${m.id})" class="px-2 py-1 bg-rose-100 text-rose-700 rounded-lg font-bold hover:bg-rose-200 cursor-pointer">🗑</button>
+                                <button onclick="deleteMovement(${m.id})" class="px-2 py-1 bg-rose-100 text-rose-700 rounded-lg font-bold cursor-pointer">🗑</button>
                             </td>
                         </tr>
                     `;
@@ -885,17 +852,27 @@
         }
 
         function toggleDeliveryStatus(id) {
-            sales = sales.map(s => s.id === id ? { ...s, deliveryStatus: s.deliveryStatus === 'pendiente' ? 'entregado' : 'pendiente' } : s);
-            saveToCloud();
+            sales = sales.map(s => {
+                if (s.id === id) {
+                    const newDel = s.deliveryStatus === 'pendiente' ? 'entregado' : 'pendiente';
+                    updateStatusInCloud(s.id, newDel, s.paymentStatus);
+                    return { ...s, deliveryStatus: newDel };
+                }
+                return s;
+            });
             renderAdminData();
-            updateAppBadge();
         }
 
         function togglePaymentStatus(id) {
-            sales = sales.map(s => s.id === id ? { ...s, paymentStatus: s.paymentStatus === 'pendiente' ? 'cobrado' : 'pendiente' } : s);
-            saveToCloud();
+            sales = sales.map(s => {
+                if (s.id === id) {
+                    const newPay = s.paymentStatus === 'pendiente' ? 'cobrado' : 'pendiente';
+                    updateStatusInCloud(s.id, s.deliveryStatus, newPay);
+                    return { ...s, paymentStatus: newPay };
+                }
+                return s;
+            });
             renderAdminData();
-            updateAppBadge();
         }
 
         function sendReminderWhatsApp(id) {
@@ -907,25 +884,16 @@
 
         function adjustStock(id, delta) {
             products = products.map(p => p.id === id ? { ...p, stock: Math.max(0, p.stock + delta) } : p);
-            saveToCloud();
+            saveProductsLocal();
             renderProducts();
             renderAdminData();
         }
 
         function updatePrice(id, newPrice) {
             products = products.map(p => p.id === id ? { ...p, price: parseFloat(newPrice) || 0 } : p);
-            saveToCloud();
+            saveProductsLocal();
             renderProducts();
             renderAdminData();
-        }
-
-        function deleteProduct(id) {
-            if (confirm("¿Eliminar producto?")) {
-                products = products.filter(p => p.id !== id);
-                saveToCloud();
-                renderProducts();
-                renderAdminData();
-            }
         }
 
         function addNewProduct(e) {
@@ -940,23 +908,19 @@
                 desc: document.getElementById('new-p-desc').value
             };
             products.push(newProd);
-            saveToCloud();
+            saveProductsLocal();
             renderProducts();
             renderAdminData();
             switchAdminTab('stock');
             e.target.reset();
         }
 
-        function resetAllData() {
-            if (confirm("¿Restaurar valores de fábrica?")) {
-                localStorage.clear();
+        function resetLocalData() {
+            if (confirm("¿Restablecer productos de fábrica?")) {
+                localStorage.removeItem('pd_products');
                 products = defaultProducts;
-                sales = [];
-                movements = [];
-                saveToCloud();
                 renderProducts();
                 renderAdminData();
-                updateAppBadge();
             }
         }
 
