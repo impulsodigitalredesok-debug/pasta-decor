@@ -311,11 +311,33 @@
         const banner = document.getElementById('pwa-install-banner');
         const installBtn = document.getElementById('btn-pwa-install');
 
+        // 1. Muestra el cartel automáticamente a todos los clientes que entren
+        window.addEventListener('load', () => {
+            // Si el cliente entra desde el navegador (y no con la app ya instalada)
+            if (!window.matchMedia('(display-mode: standalone)').matches && banner) {
+                // Muestra el cartel grande de instalación
+                banner.classList.remove('hidden');
+            }
+        });
+
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
             if (banner) banner.classList.remove('hidden');
         });
+
+        async function triggerPWAInstall() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    if (banner) banner.classList.add('hidden');
+                }
+                deferredPrompt = null;
+            } else {
+                alert("Para instalar la app en tu celular:\n\n👉 En Android (Chrome): Tocá los 3 puntos arriba a la derecha y elegí 'Añadir a la pantalla de inicio'.\n\n👉 En iPhone (Safari): Tocá el botón Compartir ⬆ y elegí 'Agregar a pantalla principal'.");
+            }
+        }
 
         async function triggerPWAInstall() {
             if (deferredPrompt) {
