@@ -336,7 +336,7 @@
     <!-- SCRIPT PRINCIPAL -->
     <script>
         const ADMIN_PASSWORD = "8266";
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxVJ_c32fkrurA4QJhgwBVjlnGgJLgQofSOg2vkWb9Nq8PwUx1pvyIYxEyVxJBqVNjhgw/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwzrJCS0tm9re7kwt6faUzQRusqY-JPcF3_2cQ2viMAwLxHo5Js8J0plwtyg8GZBM7Pjw/exec";
 
         // Registrar Service Worker para habilitar el número rojo (Badge API)
         if ('serviceWorker' in navigator) {
@@ -721,6 +721,11 @@
         function openAdminModal() {
             const pwd = prompt("Contraseña de administrador:");
             if (pwd === ADMIN_PASSWORD) {
+                // Solicitar permiso de notificaciones al entrar a admin (necesario para el número rojo y avisos)
+                if ('Notification' in window && Notification.permission !== 'granted') {
+                    Notification.requestPermission();
+                }
+                
                 document.getElementById('admin-modal').classList.remove('hidden');
                 renderAdminData();
             } else if (pwd !== null) {
