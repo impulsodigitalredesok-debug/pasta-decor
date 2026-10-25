@@ -46,7 +46,7 @@
         </div>
     </header>
 
-    <!-- CARTEL GRANDE Y LLAMATIVO ARRIBA (DEBAJO DEL HEADER) -->
+    <!-- CARTEL GRANDE DE INSTALACIÓN ARRIBA -->
     <div id="pwa-install-banner" class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-4 shadow-lg border-b-4 border-emerald-400 hidden flex flex-col sm:flex-row items-center justify-between gap-4 max-w-7xl mx-auto w-full my-4 px-4 rounded-2xl">
         <div class="flex items-center space-x-3 text-center sm:text-left">
             <div class="w-14 h-14 bg-white rounded-full p-1 flex-shrink-0 shadow-md">
@@ -298,7 +298,14 @@
     <!-- SCRIPT PRINCIPAL -->
     <script>
         const ADMIN_PASSWORD = "8266";
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxVJ_c32fkrurA4QJhgwBVjlnGgJLgQofSOg2vkWb9Nq8PwUx1pvyIYxEyVxJBqVNjhgw/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbybuK-UCboT2xn5LTxAX3otfJNNiLmX1qeXjq2Nnf3uicCa2HKvAJkLB9IsHYubJZw-TA/exec";
+
+        // Registrar Service Worker para PWA y notificaciones de insignia
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error', err));
+            });
+        }
 
         let deferredPrompt;
         const banner = document.getElementById('pwa-install-banner');
@@ -329,6 +336,26 @@
 
         function closePwaBanner() {
             if (banner) banner.classList.add('hidden');
+        }
+
+        // Actualizar número rojo (Badge) en el ícono de la App
+        function updateAppBadge() {
+            const pendingCount = sales.filter(s => s.type === 'venta' && (s.deliveryStatus === 'pendiente' || s.paymentStatus === 'pendiente')).length;
+            
+            if ('setAppBadge' in navigator) {
+                if (pendingCount > 0) {
+                    navigator.setAppBadge(pendingCount).catch(err => console.log(err));
+                } else {
+                    navigator.clearAppBadge().catch(err => console.log(err));
+                }
+            }
+
+            if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage({
+                    type: 'UPDATE_BADGE',
+                    count: pendingCount
+                });
+            }
         }
 
         const defaultProducts = [
@@ -366,6 +393,7 @@
                     sales = data.sales || [];
                     movements = data.movements || [];
                     renderProducts();
+                    updateAppBadge();
                 }
             } catch (err) {
                 console.error("Error al cargar desde Google Sheets:", err);
@@ -605,6 +633,7 @@
             sales.unshift(newSale);
             saveToCloud();
             renderProducts();
+            updateAppBadge();
 
             let text = `*NUEVO PEDIDO PASTAS DECOR*\n\n👤 *Cliente:* ${name}\n💳 *Pago:* ${payment}\n🛒 *Detalle:* ${newSale.items}\n\n💰 *TOTAL:* $${total.toLocaleString()}`;
             const waUrl = `https://wa.me/5492364351764?text=${encodeURIComponent(text)}`;
@@ -668,6 +697,7 @@
                 sales = sales.filter(s => s.id !== id);
                 saveToCloud();
                 renderAdminData();
+                updateAppBadge();
             }
         }
 
@@ -810,12 +840,14 @@
             sales = sales.map(s => s.id === id ? { ...s, deliveryStatus: s.deliveryStatus === 'pendiente' ? 'entregado' : 'pendiente' } : s);
             saveToCloud();
             renderAdminData();
+            updateAppBadge();
         }
 
         function togglePaymentStatus(id) {
             sales = sales.map(s => s.id === id ? { ...s, paymentStatus: s.paymentStatus === 'pendiente' ? 'cobrado' : 'pendiente' } : s);
             saveToCloud();
             renderAdminData();
+            updateAppBadge();
         }
 
         function sendReminderWhatsApp(id) {
@@ -888,6 +920,7 @@
                 saveToCloud();
                 renderProducts();
                 renderAdminData();
+                updateAppBadge();
             }
         }
 
