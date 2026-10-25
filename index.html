@@ -29,11 +29,6 @@
                 </div>
             </div>
 
-            <div class="flex items-center space-x-1.5 sm:space-x-3">
-                <button id="header-pwa-btn" onclick="triggerPWAInstall()" class="bg-emerald-700 hover:bg-emerald-600 text-white text-xs px-2.5 py-2 rounded-xl border border-emerald-500 font-bold flex items-center gap-1 transition cursor-pointer">
-                    <span>📲 Instalar App</span>
-                </button>
-
                 <button onclick="openAdminModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-2 rounded-xl border border-slate-700 flex items-center gap-1 transition cursor-pointer">
                     <span>⚙ Admin</span>
                 </button>
@@ -311,11 +306,10 @@
         const banner = document.getElementById('pwa-install-banner');
         const installBtn = document.getElementById('btn-pwa-install');
 
-        // 1. Muestra el cartel automáticamente a todos los clientes que entren
+        // Muestra el banner grande solo si NO está instalada como app
         window.addEventListener('load', () => {
-            // Si el cliente entra desde el navegador (y no con la app ya instalada)
-            if (!window.matchMedia('(display-mode: standalone)').matches && banner) {
-                // Muestra el cartel grande de instalación
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+            if (!isStandalone && banner) {
                 banner.classList.remove('hidden');
             }
         });
@@ -323,7 +317,10 @@
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            if (banner) banner.classList.remove('hidden');
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+            if (!isStandalone && banner) {
+                banner.classList.remove('hidden');
+            }
         });
 
         async function triggerPWAInstall() {
@@ -336,19 +333,6 @@
                 deferredPrompt = null;
             } else {
                 alert("Para instalar la app en tu celular:\n\n👉 En Android (Chrome): Tocá los 3 puntos arriba a la derecha y elegí 'Añadir a la pantalla de inicio'.\n\n👉 En iPhone (Safari): Tocá el botón Compartir ⬆ y elegí 'Agregar a pantalla principal'.");
-            }
-        }
-
-        async function triggerPWAInstall() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    if (banner) banner.classList.add('hidden');
-                }
-                deferredPrompt = null;
-            } else {
-                alert("Para instalar la app:\n\n👉 En Android (Chrome): Tocá los 3 puntos arriba a la derecha y elegí 'Añadir a la pantalla de inicio'.\n\n👉 En iPhone (Safari): Tocá el botón Compartir ⬆ y elegí 'Agregar a pantalla principal'.");
             }
         }
 
