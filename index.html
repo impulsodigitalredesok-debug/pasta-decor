@@ -164,7 +164,25 @@
         </div>
     </div>
 
-    <!-- MODAL EDITAR PEDIDO (ADMIN) - z-[60] para estar por encima del panel admin -->
+    <!-- MODAL RESUMEN DE MERCADERÍA A PREPARAR -->
+    <div id="prep-summary-modal" class="fixed inset-0 z-[70] bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative space-y-4 max-h-[85vh] overflow-y-auto">
+            <button onclick="closePrepSummary()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 font-bold cursor-pointer text-lg">✕</button>
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl bg-sky-100 text-sky-700">📦</div>
+                <div>
+                    <h3 class="text-lg font-extrabold text-slate-900">Mercadería a Preparar</h3>
+                    <p class="text-xs text-slate-500">Suma total de ítems en pedidos pendientes de entrega</p>
+                </div>
+            </div>
+            <div id="prep-summary-content" class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2 text-sm divide-y divide-slate-100">
+                <!-- Se llena por JS -->
+            </div>
+            <button onclick="closePrepSummary()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-xl text-xs transition cursor-pointer">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- MODAL EDITAR PEDIDO (ADMIN) -->
     <div id="edit-order-modal" class="fixed inset-0 z-[60] bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative space-y-4">
             <button onclick="closeEditModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 font-bold cursor-pointer text-lg">✕</button>
@@ -195,7 +213,7 @@
         </div>
     </div>
 
-    <!-- MODAL DETALLE CÓMODO DE PEDIDO (ADMIN) - z-[60] -->
+    <!-- MODAL DETALLE CÓMODO DE PEDIDO (ADMIN) -->
     <div id="order-detail-modal" class="fixed inset-0 z-[60] bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative space-y-4">
             <button onclick="closeOrderDetail()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 font-bold cursor-pointer text-lg">✕</button>
@@ -263,12 +281,10 @@
                     <span class="text-[11px] text-emerald-700 font-medium block">Total Recaudado</span>
                     <span id="admin-total-revenue" class="text-lg font-black text-emerald-700">$0</span>
                 </div>
-                <!-- Botón global Pendiente Cobro -->
                 <div onclick="filterSalesStatusGlobal('p_cobro')" class="bg-amber-50 border border-amber-200 p-3.5 rounded-2xl cursor-pointer hover:bg-amber-100 transition shadow-sm">
                     <span class="text-[11px] text-amber-700 font-medium block">Pendiente Cobro 🔍</span>
                     <span id="admin-pending-payment-val" class="text-lg font-black text-amber-700">$0</span>
                 </div>
-                <!-- Botón global Pendiente Entrega -->
                 <div onclick="filterSalesStatusGlobal('p_entrega')" class="bg-sky-50 border border-sky-200 p-3.5 rounded-2xl cursor-pointer hover:bg-sky-100 transition shadow-sm">
                     <span class="text-[11px] text-sky-700 font-medium block">Pendiente Entrega 🔍</span>
                     <span id="admin-pending-delivery-count" class="text-lg font-black text-sky-700">0</span>
@@ -295,11 +311,22 @@
             <!-- TAB 1: PEDIDOS -->
             <div id="admin-tab-sales" class="space-y-4">
                 <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200">
-                    <div class="flex flex-wrap gap-1.5">
+                    <div class="flex flex-wrap gap-1.5 items-center">
                         <button onclick="filterSalesStatus('todos')" id="sfilter-todos" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white cursor-pointer">Todos</button>
                         <button onclick="filterSalesStatus('p_entrega')" id="sfilter-p_entrega" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 cursor-pointer">🚚 Pend. Entrega</button>
                         <button onclick="filterSalesStatus('p_cobro')" id="sfilter-p_cobro" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 cursor-pointer">⏳ Pend. Cobro</button>
                         <button onclick="filterSalesStatus('completado')" id="sfilter-completado" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 cursor-pointer">✔ Completados</button>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <!-- Filtro de fecha -->
+                        <input type="date" id="sales-date-filter" onchange="renderAdminData()" class="bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-700">
+                        <button onclick="clearDateFilter()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold px-2.5 py-1.5 rounded-xl cursor-pointer" title="Borrar filtro de fecha">✕ Fecha</button>
+                        
+                        <!-- Botón Resumen de Preparación -->
+                        <button onclick="openPrepSummary()" class="bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition cursor-pointer flex items-center gap-1 shadow-sm">
+                            <span>📦 Ver Qué Preparar</span>
+                        </button>
                     </div>
                 </div>
 
@@ -788,6 +815,48 @@
             document.getElementById('order-detail-modal').classList.add('hidden');
         }
 
+        // RESUMEN DE MERCADERÍA A PREPARAR
+        function openPrepSummary() {
+            const summaryContent = document.getElementById('prep-summary-content');
+            summaryContent.innerHTML = '';
+
+            // Agrupar ítems de pedidos con entrega pendiente
+            let itemTotals = {};
+            sales.forEach(s => {
+                if (s.deliveryStatus === 'pendiente') {
+                    const lines = s.items.split(',');
+                    lines.forEach(line => {
+                        const parts = line.trim().split('x ');
+                        if (parts.length === 2) {
+                            const qty = parseInt(parts[0]) || 0;
+                            const prodName = parts[1].trim();
+                            itemTotals[prodName] = (itemTotals[prodName] || 0) + qty;
+                        }
+                    });
+                }
+            });
+
+            const keys = Object.keys(itemTotals);
+            if (keys.length === 0) {
+                summaryContent.innerHTML = `<p class="text-center text-slate-400 py-4 text-sm">No hay pedidos pendientes de entrega para preparar.</p>`;
+            } else {
+                keys.forEach(name => {
+                    summaryContent.innerHTML += `
+                        <div class="flex justify-between items-center py-2 text-sm">
+                            <span class="font-bold text-slate-800">${name}</span>
+                            <span class="bg-sky-100 text-sky-800 px-3 py-1 rounded-xl font-black text-xs">${itemTotals[name]} u.</span>
+                        </div>
+                    `;
+                });
+            }
+
+            document.getElementById('prep-summary-modal').classList.remove('hidden');
+        }
+
+        function closePrepSummary() {
+            document.getElementById('prep-summary-modal').classList.add('hidden');
+        }
+
         // FUNCIONES DE EDICIÓN DE PEDIDO
         function openEditModal(id) {
             const sale = sales.find(s => s.id === id);
@@ -829,7 +898,6 @@
             saveToCloud();
             renderAdminData();
             closeEditModal();
-            // Mantener abierto el admin
         }
 
         function openWhatsAppChat(phone, customerName) {
@@ -960,6 +1028,11 @@
             filterSalesStatus(status);
         }
 
+        function clearDateFilter() {
+            document.getElementById('sales-date-filter').value = '';
+            renderAdminData();
+        }
+
         function renderAdminData() {
             const stockBody = document.getElementById('admin-stock-list');
             stockBody.innerHTML = '';
@@ -1004,11 +1077,30 @@
             document.getElementById('admin-pending-payment-val').innerText = '$' + pendingPaymentVal.toLocaleString();
             document.getElementById('admin-pending-delivery-count').innerText = pendingDeliveryCount;
 
+            // Filtro por fecha seleccionada y por estado
+            const selectedDateInput = document.getElementById('sales-date-filter').value; // formato yyyy-mm-dd
+
             const filteredSales = sales.filter(s => {
-                if (currentSalesStatusFilter === 'p_entrega') return s.deliveryStatus === 'pendiente';
-                if (currentSalesStatusFilter === 'p_cobro') return s.paymentStatus === 'pendiente';
-                if (currentSalesStatusFilter === 'completado') return s.deliveryStatus === 'entregado' && s.paymentStatus === 'cobrado';
-                return true;
+                // Filtro de estado
+                let matchesStatus = true;
+                if (currentSalesStatusFilter === 'p_entrega') matchesStatus = s.deliveryStatus === 'pendiente';
+                else if (currentSalesStatusFilter === 'p_cobro') matchesStatus = s.paymentStatus === 'pendiente';
+                else if (currentSalesStatusFilter === 'completado') matchesStatus = s.deliveryStatus === 'entregado' && s.paymentStatus === 'cobrado';
+
+                // Filtro de fecha
+                let matchesDate = true;
+                if (selectedDateInput) {
+                    // s.date tiene formato "dd/mm/yyyy, hh:mm:ss" (es-AR)
+                    const parts = s.date.split(',')[0].split('/'); // [dd, mm, yyyy]
+                    if (parts.length === 3) {
+                        const saleFormattedDate = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+                        matchesDate = (saleFormattedDate === selectedDateInput);
+                    } else {
+                        matchesDate = false;
+                    }
+                }
+
+                return matchesStatus && matchesDate;
             });
 
             if (filteredSales.length === 0) {
@@ -1128,7 +1220,7 @@
             saveToCloud();
             renderProducts();
             renderAdminData();
-            switchAdminTab('stock'); // Vuelve a la pestaña de stock dentro del panel
+            switchAdminTab('stock');
             e.target.reset();
         }
 
@@ -1147,4 +1239,4 @@
         renderProducts();
     </script>
 </body>
-</html>
+    </html>
