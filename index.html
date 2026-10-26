@@ -142,9 +142,9 @@
         </div>
     </div>
 
-    <!-- MODAL TURNO CONFIRMADO (ESTILO AMBOS MUNDOS) -->
+    <!-- MODAL TURNO CONFIRMADO -->
     <div id="success-modal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl space-y-4 animate-scale">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl space-y-4">
             <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-4xl mx-auto shadow-inner">🎉</div>
             <h3 class="text-2xl font-black text-slate-900">¡Pedido Registrado!</h3>
             <p class="text-slate-600 text-sm">Tu pedido se guardó con éxito en el sistema. Te estamos redirigiendo a WhatsApp para enviarlo.</p>
@@ -221,13 +221,13 @@
                     <span class="text-[11px] text-emerald-700 font-medium block">Total Recaudado</span>
                     <span id="admin-total-revenue" class="text-lg font-black text-emerald-700">$0</span>
                 </div>
-                <!-- Botón filtro Pendiente Cobro -->
-                <div onclick="filterSalesStatus('p_cobro')" class="bg-amber-50 border border-amber-200 p-3.5 rounded-2xl cursor-pointer hover:bg-amber-100 transition shadow-sm">
+                <!-- Botón global Pendiente Cobro -->
+                <div onclick="filterSalesStatusGlobal('p_cobro')" class="bg-amber-50 border border-amber-200 p-3.5 rounded-2xl cursor-pointer hover:bg-amber-100 transition shadow-sm">
                     <span class="text-[11px] text-amber-700 font-medium block">Pendiente Cobro 🔍</span>
                     <span id="admin-pending-payment-val" class="text-lg font-black text-amber-700">$0</span>
                 </div>
-                <!-- Botón filtro Pendiente Entrega -->
-                <div onclick="filterSalesStatus('p_entrega')" class="bg-sky-50 border border-sky-200 p-3.5 rounded-2xl cursor-pointer hover:bg-sky-100 transition shadow-sm">
+                <!-- Botón global Pendiente Entrega -->
+                <div onclick="filterSalesStatusGlobal('p_entrega')" class="bg-sky-50 border border-sky-200 p-3.5 rounded-2xl cursor-pointer hover:bg-sky-100 transition shadow-sm">
                     <span class="text-[11px] text-sky-700 font-medium block">Pendiente Entrega 🔍</span>
                     <span id="admin-pending-delivery-count" class="text-lg font-black text-sky-700">0</span>
                 </div>
@@ -421,9 +421,9 @@
             { id: 3, name: "Paquete 500g Color Blanco", price: 4200, stock: 20, category: "500g", desc: "Formato 500g.", image: "blancom.jpg" },
             { id: 4, name: "Paquete 500g Pasta de Goma Blanca", price: 4900, stock: 12, category: "goma", desc: "Ideal para flores.", image: "pasta de goma.jpg" },
             { id: 5, name: "Paquete 500g Color NEGRO", price: 4900, stock: 8, category: "color", desc: "Negro intenso.", image: "negro.jpg" },
-            { id: 6, name: "Paquete 500g Color ROJO", price: 4900, stock: 8, category: "color", desc: "Rojo radiante.", image: "rojo.jpg" },
+            { id: 6, name: "Paquete 500g Color ROJO", price: 4900, stock: 8, category: "rojo radiante.", image: "rojo.jpg" },
             { id: 7, name: "Paquete 500g Color AZUL", price: 4900, stock: 8, category: "color", desc: "Azul intenso.", image: "azul.jpg" },
-            { id: 8, name: "Paquete 500g Color VIOLETA", price: 4900, stock: 8, category: "violeta.", image: "azul.jpg" },
+            { id: 8, name: "Paquete 500g Color VIOLETA", price: 4900, stock: 8, category: "color", desc: "Violeta.", image: "azul.jpg" },
             { id: 9, name: "Paquete 500g Color AMARILLO", price: 4900, stock: 8, category: "color", desc: "Amarillo.", image: "amarillo.jpg" },
             { id: 10, name: "Paquete 500g Color FUCSIA", price: 4900, stock: 8, category: "color", desc: "Fucsia.", image: "fucsia.jpg" },
             { id: 11, name: "Paquete 500g Color MARRON", price: 4900, stock: 8, category: "color", desc: "Marrón.", image: "marron.jpg" },
@@ -644,7 +644,6 @@
             document.getElementById('cart-modal').classList.toggle('hidden');
         }
 
-        // PROCESAR CHECKOUT CON MODAL DE ÉXITO ESTILO AMBOS MUNDOS
         function processCheckout(e) {
             e.preventDefault();
             if (cart.length === 0) {
@@ -686,7 +685,6 @@
             cart = [];
             updateCartUI();
 
-            // Mostrar modal de éxito antes de abrir WhatsApp
             document.getElementById('success-modal').classList.remove('hidden');
 
             setTimeout(() => {
@@ -696,7 +694,6 @@
             }, 2500);
         }
 
-        // ABRIR DETALLE CÓMODO DE UN PEDIDO
         function openOrderDetail(id) {
             const sale = sales.find(s => s.id === id);
             if (!sale) return;
@@ -771,10 +768,34 @@
             }
         }
 
+        // ELIMINAR PEDIDO Y RESTITUIR STOCK AUTOMÁTICAMENTE
         function deleteSale(id) {
-            if (confirm("¿Borrar este pedido del historial?")) {
+            const saleToDelete = sales.find(s => s.id === id);
+            if (!saleToDelete) return;
+
+            if (confirm(`¿Borrar el pedido de ${saleToDelete.customer}? Los productos volverán al stock.`)) {
+                // Devolver stock analizando el texto de ítems (ej. "2x Paquete 500g Color ROJO")
+                const itemsStr = saleToDelete.items;
+                const lines = itemsStr.split(',');
+                
+                lines.forEach(line => {
+                    const parts = line.trim().split('x ');
+                    if (parts.length === 2) {
+                        const qtyToRestore = parseInt(parts[0]) || 0;
+                        const productName = parts[1].trim();
+
+                        products = products.map(p => {
+                            if (p.name.toLowerCase() === productName.toLowerCase()) {
+                                return { ...p, stock: p.stock + qtyToRestore };
+                            }
+                            return p;
+                        });
+                    }
+                });
+
                 sales = sales.filter(s => s.id !== id);
                 saveToCloud();
+                renderProducts();
                 renderAdminData();
             }
         }
@@ -821,6 +842,12 @@
                 }
             });
             renderAdminData();
+        }
+
+        // FILTRO GLOBAL DESDE LAS TARJETAS SUPERIORES (FUNCIONA DESDE CUALQUIER SOLAPA)
+        function filterSalesStatusGlobal(status) {
+            switchAdminTab('sales');
+            filterSalesStatus(status);
         }
 
         function renderAdminData() {
@@ -903,7 +930,7 @@
                             <td class="p-3 font-bold text-slate-900">$${s.total.toLocaleString()}</td>
                             <td class="p-3 text-right space-x-1">
                                 <button onclick="openOrderDetail(${s.id})" class="px-2.5 py-1 bg-sky-50 text-sky-700 font-bold border border-sky-200 rounded-lg hover:bg-sky-100 cursor-pointer" title="Ver Detalle">👁 Ver</button>
-                                <button onclick="deleteSale(${s.id})" class="px-2 py-1 text-slate-400 hover:text-rose-600 font-bold cursor-pointer">🗑</button>
+                                <button onclick="deleteSale(${s.id})" class="px-2 py-1 text-slate-400 hover:text-rose-600 font-bold cursor-pointer" title="Borrar y devolver stock">🗑</button>
                             </td>
                         </tr>
                     `;
@@ -953,7 +980,7 @@
                     const newPay = s.paymentStatus === 'pendiente' ? 'cobrado' : 'pendiente';
                     return { ...s, paymentStatus: newPay };
                 }
-                return s;
+                return s.paymentStatus;
             });
             saveToCloud();
             renderAdminData();
