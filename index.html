@@ -142,12 +142,59 @@
         </div>
     </div>
 
-    <!-- MODAL WHATSAPP -->
-    <div id="redirect-modal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl space-y-4">
-            <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl mx-auto">💬</div>
-            <h3 class="text-xl font-bold text-slate-900">¡Pedido Registrado!</h3>
-            <p class="text-slate-600 text-sm">Abriendo WhatsApp para enviar tu pedido...</p>
+    <!-- MODAL TURNO CONFIRMADO (ESTILO AMBOS MUNDOS) -->
+    <div id="success-modal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl space-y-4 animate-scale">
+            <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-4xl mx-auto shadow-inner">🎉</div>
+            <h3 class="text-2xl font-black text-slate-900">¡Pedido Registrado!</h3>
+            <p class="text-slate-600 text-sm">Tu pedido se guardó con éxito en el sistema. Te estamos redirigiendo a WhatsApp para enviarlo.</p>
+            <div class="pt-2">
+                <span class="text-xs text-slate-400 animate-pulse">Abriendo WhatsApp en unos segundos...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DETALLE CÓMODO DE PEDIDO (ADMIN) -->
+    <div id="order-detail-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative space-y-4">
+            <button onclick="closeOrderDetail()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 font-bold cursor-pointer text-lg">✕</button>
+            <div class="flex items-center gap-3">
+                <div id="detail-icon" class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl bg-emerald-100 text-emerald-700">📦</div>
+                <div>
+                    <h3 class="text-lg font-extrabold text-slate-900" id="detail-title">Detalle del Pedido</h3>
+                    <p class="text-xs text-slate-500" id="detail-date"></p>
+                </div>
+            </div>
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3 text-sm">
+                <div>
+                    <span class="text-[11px] text-slate-400 uppercase font-bold block">Cliente</span>
+                    <span id="detail-customer" class="font-bold text-slate-900 text-base"></span>
+                </div>
+                <div>
+                    <span class="text-[11px] text-slate-400 uppercase font-bold block">Productos / Ítems</span>
+                    <span id="detail-items" class="text-slate-700 font-medium block bg-white p-2.5 rounded-xl border border-slate-100"></span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200">
+                    <div>
+                        <span class="text-[11px] text-slate-400 uppercase font-bold block">Entrega</span>
+                        <span id="detail-del-status" class="inline-block px-2.5 py-1 rounded-lg font-bold text-xs mt-1"></span>
+                    </div>
+                    <div>
+                        <span class="text-[11px] text-slate-400 uppercase font-bold block">Cobro</span>
+                        <span id="detail-pay-status" class="inline-block px-2.5 py-1 rounded-lg font-bold text-xs mt-1"></span>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center pt-2 border-t border-slate-200">
+                    <span class="text-xs font-bold text-slate-500 uppercase">Total:</span>
+                    <span id="detail-total" class="text-xl font-black text-emerald-600"></span>
+                </div>
+            </div>
+            <div class="pt-2 flex gap-2">
+                <button onclick="sendReminderWhatsAppFromModal()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs transition cursor-pointer flex items-center justify-center gap-1.5">
+                    <span>💬 Enviar WhatsApp</span>
+                </button>
+                <button onclick="closeOrderDetail()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2.5 rounded-xl text-xs transition cursor-pointer">Cerrar</button>
+            </div>
         </div>
     </div>
 
@@ -174,12 +221,14 @@
                     <span class="text-[11px] text-emerald-700 font-medium block">Total Recaudado</span>
                     <span id="admin-total-revenue" class="text-lg font-black text-emerald-700">$0</span>
                 </div>
-                <div class="bg-amber-50 border border-amber-200 p-3.5 rounded-2xl">
-                    <span class="text-[11px] text-amber-700 font-medium block">Pendiente Cobro</span>
+                <!-- Botón filtro Pendiente Cobro -->
+                <div onclick="filterSalesStatus('p_cobro')" class="bg-amber-50 border border-amber-200 p-3.5 rounded-2xl cursor-pointer hover:bg-amber-100 transition shadow-sm">
+                    <span class="text-[11px] text-amber-700 font-medium block">Pendiente Cobro 🔍</span>
                     <span id="admin-pending-payment-val" class="text-lg font-black text-amber-700">$0</span>
                 </div>
-                <div class="bg-sky-50 border border-sky-200 p-3.5 rounded-2xl">
-                    <span class="text-[11px] text-sky-700 font-medium block">Pendiente Entrega</span>
+                <!-- Botón filtro Pendiente Entrega -->
+                <div onclick="filterSalesStatus('p_entrega')" class="bg-sky-50 border border-sky-200 p-3.5 rounded-2xl cursor-pointer hover:bg-sky-100 transition shadow-sm">
+                    <span class="text-[11px] text-sky-700 font-medium block">Pendiente Entrega 🔍</span>
                     <span id="admin-pending-delivery-count" class="text-lg font-black text-sky-700">0</span>
                 </div>
                 <div class="bg-purple-50 border border-purple-200 p-3.5 rounded-2xl">
@@ -334,11 +383,12 @@
     <!-- SCRIPT -->
     <script>
         const ADMIN_PASSWORD = "8266";
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziGfFp5qGcvE275j15aHt8TPtLTQkHUNQFN-q2-NdPMq-sQZxXDLe3DcM2nDjzerjxUQ/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxVJ_c32fkrurA4QJhgwBVjlnGgJLgQofSOg2vkWb9Nq8PwUx1pvyIYxEyVxJBqVNjhgw/exec";
 
         let deferredPrompt;
         const banner = document.getElementById('pwa-install-banner');
         const installBtn = document.getElementById('btn-pwa-install');
+        let currentSelectedSaleId = null;
 
         window.addEventListener('load', () => {
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
@@ -373,7 +423,7 @@
             { id: 5, name: "Paquete 500g Color NEGRO", price: 4900, stock: 8, category: "color", desc: "Negro intenso.", image: "negro.jpg" },
             { id: 6, name: "Paquete 500g Color ROJO", price: 4900, stock: 8, category: "color", desc: "Rojo radiante.", image: "rojo.jpg" },
             { id: 7, name: "Paquete 500g Color AZUL", price: 4900, stock: 8, category: "color", desc: "Azul intenso.", image: "azul.jpg" },
-            { id: 8, name: "Paquete 500g Color VIOLETA", price: 4900, stock: 8, category: "color", desc: "Violeta.", image: "azul.jpg" },
+            { id: 8, name: "Paquete 500g Color VIOLETA", price: 4900, stock: 8, category: "violeta.", image: "azul.jpg" },
             { id: 9, name: "Paquete 500g Color AMARILLO", price: 4900, stock: 8, category: "color", desc: "Amarillo.", image: "amarillo.jpg" },
             { id: 10, name: "Paquete 500g Color FUCSIA", price: 4900, stock: 8, category: "color", desc: "Fucsia.", image: "fucsia.jpg" },
             { id: 11, name: "Paquete 500g Color MARRON", price: 4900, stock: 8, category: "color", desc: "Marrón.", image: "marron.jpg" },
@@ -391,7 +441,6 @@
         let currentFilterCat = 'todos';
         let currentSalesStatusFilter = 'todos';
 
-        // CARGAR DATOS DESDE LA NUBE (CELDA A1)
         async function loadFromCloud() {
             try {
                 const res = await fetch(GOOGLE_SCRIPT_URL + "?action=read");
@@ -408,7 +457,6 @@
             }
         }
 
-        // GUARDAR TODO EL PAQUETE EN LA NUBE (CELDA A1)
         async function saveToCloud() {
             try {
                 const payload = {
@@ -596,6 +644,7 @@
             document.getElementById('cart-modal').classList.toggle('hidden');
         }
 
+        // PROCESAR CHECKOUT CON MODAL DE ÉXITO ESTILO AMBOS MUNDOS
         function processCheckout(e) {
             e.preventDefault();
             if (cart.length === 0) {
@@ -637,13 +686,59 @@
             cart = [];
             updateCartUI();
 
-            document.getElementById('redirect-modal').classList.remove('hidden');
-            window.open(waUrl, '_blank');
+            // Mostrar modal de éxito antes de abrir WhatsApp
+            document.getElementById('success-modal').classList.remove('hidden');
 
             setTimeout(() => {
-                document.getElementById('redirect-modal').classList.add('hidden');
+                document.getElementById('success-modal').classList.add('hidden');
+                window.open(waUrl, '_blank');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-            }, 1500);
+            }, 2500);
+        }
+
+        // ABRIR DETALLE CÓMODO DE UN PEDIDO
+        function openOrderDetail(id) {
+            const sale = sales.find(s => s.id === id);
+            if (!sale) return;
+            currentSelectedSaleId = id;
+
+            document.getElementById('detail-title').innerText = `Pedido de ${sale.customer}`;
+            document.getElementById('detail-date').innerText = sale.date;
+            document.getElementById('detail-customer').innerText = sale.customer;
+            document.getElementById('detail-items').innerText = sale.items;
+            document.getElementById('detail-total').innerText = '$' + sale.total.toLocaleString();
+
+            const delEl = document.getElementById('detail-del-status');
+            if (sale.deliveryStatus === 'pendiente') {
+                delEl.className = "inline-block px-2.5 py-1 rounded-lg font-bold text-xs mt-1 bg-amber-100 text-amber-900 border border-amber-300";
+                delEl.innerText = "🚚 PENDIENTE ENTREGA";
+            } else {
+                delEl.className = "inline-block px-2.5 py-1 rounded-lg font-bold text-xs mt-1 bg-emerald-100 text-emerald-800 border border-emerald-300";
+                delEl.innerText = "✔ ENTREGADO";
+            }
+
+            const payEl = document.getElementById('detail-pay-status');
+            if (sale.paymentStatus === 'pendiente') {
+                payEl.className = "inline-block px-2.5 py-1 rounded-lg font-bold text-xs mt-1 bg-amber-100 text-amber-900 border border-amber-300";
+                payEl.innerText = "💵 PENDIENTE COBRO";
+            } else {
+                payEl.className = "inline-block px-2.5 py-1 rounded-lg font-bold text-xs mt-1 bg-emerald-100 text-emerald-800 border border-emerald-300";
+                payEl.innerText = "✔ COBRADO";
+            }
+
+            document.getElementById('order-detail-modal').classList.remove('hidden');
+        }
+
+        function closeOrderDetail() {
+            document.getElementById('order-detail-modal').classList.add('hidden');
+        }
+
+        function sendReminderWhatsAppFromModal() {
+            if (!currentSelectedSaleId) return;
+            const sale = sales.find(s => s.id === currentSelectedSaleId);
+            if (!sale) return;
+            let text = `*RECORDATORIO - PASTAS DECOR*\n\n👤 *Cliente:* ${sale.customer}\n🛒 *Detalle:* ${sale.items}\n💰 *Monto:* $${sale.total.toLocaleString()}\n\nHola ${sale.customer}, nos comunicamos por tu pedido. ¡Muchas gracias!`;
+            window.open(`https://wa.me/5492364351764?text=${encodeURIComponent(text)}`, '_blank');
         }
 
         function addCashMovement(e) {
@@ -791,23 +886,23 @@
                     salesBody.innerHTML += `
                         <tr class="hover:bg-slate-50 text-xs">
                             <td class="p-3">
-                                <span class="font-bold text-slate-900 block">${s.customer}</span>
+                                <span class="font-bold text-slate-900 block cursor-pointer hover:text-emerald-600" onclick="openOrderDetail(${s.id})">${s.customer} 🔍</span>
                                 <span class="text-slate-400 text-[10px]">${s.date}</span>
                             </td>
-                            <td class="p-3 text-slate-600 max-w-xs truncate">${s.items}</td>
+                            <td class="p-3 text-slate-600 max-w-xs truncate cursor-pointer hover:text-slate-900" onclick="openOrderDetail(${s.id})">${s.items}</td>
                             <td class="p-3">
-                                <button onclick="toggleDeliveryStatus(${s.id})" class="px-3 py-1.5 rounded-lg font-bold text-[11px] cursor-pointer transition ${isDeliveryPending ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-emerald-100 text-emerald-800 border border-emerald-300'}">
+                                <button onclick="toggleDeliveryStatus(${s.id})" class="px-3 py-1.5 rounded-lg font-bold text-[11px] cursor-pointer transition ${isDeliveryPending ? 'bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200' : 'bg-emerald-100 text-emerald-800 border border-emerald-300 hover:bg-emerald-200'}">
                                     ${isDeliveryPending ? '🚚 PEND. ENTREGA' : '✔ ENTREGADO'}
                                 </button>
                             </td>
                             <td class="p-3">
-                                <button onclick="togglePaymentStatus(${s.id})" class="px-3 py-1.5 rounded-lg font-bold text-[11px] cursor-pointer transition ${isPaymentPending ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-emerald-100 text-emerald-800 border border-emerald-300'}">
+                                <button onclick="togglePaymentStatus(${s.id})" class="px-3 py-1.5 rounded-lg font-bold text-[11px] cursor-pointer transition ${isPaymentPending ? 'bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200' : 'bg-emerald-100 text-emerald-800 border border-emerald-300 hover:bg-emerald-200'}">
                                     ${isPaymentPending ? '💵 PEND. COBRO' : '✔ COBRADO'}
                                 </button>
                             </td>
                             <td class="p-3 font-bold text-slate-900">$${s.total.toLocaleString()}</td>
                             <td class="p-3 text-right space-x-1">
-                                <button onclick="sendReminderWhatsApp(${s.id})" class="px-2.5 py-1 bg-emerald-50 text-emerald-700 font-bold border border-emerald-200 rounded-lg hover:bg-emerald-100 cursor-pointer">🔔 WA</button>
+                                <button onclick="openOrderDetail(${s.id})" class="px-2.5 py-1 bg-sky-50 text-sky-700 font-bold border border-sky-200 rounded-lg hover:bg-sky-100 cursor-pointer" title="Ver Detalle">👁 Ver</button>
                                 <button onclick="deleteSale(${s.id})" class="px-2 py-1 text-slate-400 hover:text-rose-600 font-bold cursor-pointer">🗑</button>
                             </td>
                         </tr>
@@ -862,13 +957,6 @@
             });
             saveToCloud();
             renderAdminData();
-        }
-
-        function sendReminderWhatsApp(id) {
-            const sale = sales.find(s => s.id === id);
-            if (!sale) return;
-            let text = `*RECORDATORIO - PASTAS DECOR*\n\n👤 *Cliente:* ${sale.customer}\n🛒 *Detalle:* ${sale.items}\n💰 *Monto:* $${sale.total.toLocaleString()}\n\nHola ${sale.customer}, te contactamos por tu pedido. ¡Muchas gracias!`;
-            window.open(`https://wa.me/5492364351764?text=${encodeURIComponent(text)}`, '_blank');
         }
 
         function adjustStock(id, delta) {
