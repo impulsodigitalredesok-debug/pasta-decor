@@ -164,8 +164,8 @@
         </div>
     </div>
 
-    <!-- MODAL EDITAR PEDIDO (ADMIN) -->
-    <div id="edit-order-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <!-- MODAL EDITAR PEDIDO (ADMIN) - z-[60] para estar por encima del panel admin -->
+    <div id="edit-order-modal" class="fixed inset-0 z-[60] bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative space-y-4">
             <button onclick="closeEditModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 font-bold cursor-pointer text-lg">✕</button>
             <h3 class="text-xl font-extrabold text-slate-900">Editar Pedido</h3>
@@ -195,8 +195,8 @@
         </div>
     </div>
 
-    <!-- MODAL DETALLE CÓMODO DE PEDIDO (ADMIN) -->
-    <div id="order-detail-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <!-- MODAL DETALLE CÓMODO DE PEDIDO (ADMIN) - z-[60] -->
+    <div id="order-detail-modal" class="fixed inset-0 z-[60] bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative space-y-4">
             <button onclick="closeOrderDetail()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 font-bold cursor-pointer text-lg">✕</button>
             <div class="flex items-center gap-3">
@@ -829,6 +829,7 @@
             saveToCloud();
             renderAdminData();
             closeEditModal();
+            // Mantener abierto el admin
         }
 
         function openWhatsAppChat(phone, customerName) {
@@ -1127,7 +1128,7 @@
             saveToCloud();
             renderProducts();
             renderAdminData();
-            switchAdminTab('stock');
+            switchAdminTab('stock'); // Vuelve a la pestaña de stock dentro del panel
             e.target.reset();
         }
 
