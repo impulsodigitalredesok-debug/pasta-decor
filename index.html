@@ -108,10 +108,14 @@
             </div>
 
             <form id="checkout-form" onsubmit="processCheckout(event)" class="space-y-4 border-t border-slate-100 pt-4">
-                <h4 class="font-bold text-sm text-slate-900">Datos del Pedido</h4>
+                <h4 class="font-bold text-sm text-slate-900">Datos para el Pedido</h4>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre Completo</label>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre y Apellido</label>
                     <input type="text" id="cust-name" required placeholder="Ej. María González" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Celular / WhatsApp</label>
+                    <input type="tel" id="cust-phone" required placeholder="Ej. 2364123456" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Forma de Pago</label>
@@ -142,7 +146,7 @@
         </div>
     </div>
 
-    <!-- MODAL CARTEL DE CONFIRMACIÓN CON OPCIONES PARA EL CLIENTE -->
+    <!-- MODAL CARTEL DE CONFIRMACIÓN -->
     <div id="success-modal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl space-y-4">
             <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-4xl mx-auto shadow-inner">🎉</div>
@@ -173,8 +177,9 @@
             </div>
             <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3 text-sm">
                 <div>
-                    <span class="text-[11px] text-slate-400 uppercase font-bold block">Cliente</span>
-                    <span id="detail-customer" class="font-bold text-slate-900 text-base"></span>
+                    <span class="text-[11px] text-slate-400 uppercase font-bold block">Cliente / Celular</span>
+                    <span id="detail-customer" class="font-bold text-slate-900 text-base block"></span>
+                    <span id="detail-phone" class="text-emerald-700 font-semibold text-xs block mt-0.5"></span>
                 </div>
                 <div>
                     <span class="text-[11px] text-slate-400 uppercase font-bold block">Productos / Ítems</span>
@@ -196,8 +201,8 @@
                 </div>
             </div>
             <div class="pt-2 flex gap-2">
-                <button onclick="sendReminderWhatsAppFromModal()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs transition cursor-pointer flex items-center justify-center gap-1.5">
-                    <span>💬 Enviar WhatsApp</span>
+                <button onclick="sendWhatsAppToCustomerFromModal()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs transition cursor-pointer flex items-center justify-center gap-1.5">
+                    <span>💬 Hablar por WhatsApp</span>
                 </button>
                 <button onclick="closeOrderDetail()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2.5 rounded-xl text-xs transition cursor-pointer">Cerrar</button>
             </div>
@@ -651,7 +656,7 @@
             document.getElementById('cart-modal').classList.toggle('hidden');
         }
 
-        // PROCESAR CHECKOUT CON OPCIONES EN EL MODAL DE ÉXITO
+        // PROCESAR CHECKOUT CON NOMBRE Y CELULAR
         function processCheckout(e) {
             e.preventDefault();
             if (cart.length === 0) {
@@ -660,6 +665,7 @@
             }
 
             const name = document.getElementById('cust-name').value;
+            const phone = document.getElementById('cust-phone').value;
             const payment = document.getElementById('cust-payment').value;
             let total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
@@ -675,6 +681,7 @@
                 paymentStatus: 'pendiente',
                 date: new Date().toLocaleString('es-AR'),
                 customer: name,
+                phone: phone,
                 payment: payment,
                 total: total,
                 items: cart.map(i => `${i.quantity}x ${i.name}`).join(', ')
@@ -684,7 +691,7 @@
             saveToCloud();
             renderProducts();
 
-            let text = `*NUEVO PEDIDO PASTAS DECOR*\n\n👤 *Cliente:* ${name}\n💳 *Pago:* ${payment}\n🛒 *Detalle:* ${newSale.items}\n\n💰 *TOTAL:* $${total.toLocaleString()}`;
+            let text = `*NUEVO PEDIDO PASTAS DECOR*\n\n👤 *Cliente:* ${name}\n📱 *Celular:* ${phone}\n💳 *Pago:* ${payment}\n🛒 *Detalle:* ${newSale.items}\n\n💰 *TOTAL:* $${total.toLocaleString()}`;
             pendingWhatsAppUrl = `https://wa.me/5492364351764?text=${encodeURIComponent(text)}`;
 
             toggleCart();
@@ -693,7 +700,6 @@
             cart = [];
             updateCartUI();
 
-            // Mostrar modal con opción de enviar o cerrar
             document.getElementById('success-modal').classList.remove('hidden');
         }
 
@@ -717,6 +723,7 @@
             document.getElementById('detail-title').innerText = `Pedido de ${sale.customer}`;
             document.getElementById('detail-date').innerText = sale.date;
             document.getElementById('detail-customer').innerText = sale.customer;
+            document.getElementById('detail-phone').innerText = sale.phone ? `📱 ${sale.phone}` : '📱 Sin celular registrado';
             document.getElementById('detail-items').innerText = sale.items;
             document.getElementById('detail-total').innerText = '$' + sale.total.toLocaleString();
 
@@ -745,12 +752,19 @@
             document.getElementById('order-detail-modal').classList.add('hidden');
         }
 
-        function sendReminderWhatsAppFromModal() {
+        function sendWhatsAppToCustomerFromModal() {
             if (!currentSelectedSaleId) return;
             const sale = sales.find(s => s.id === currentSelectedSaleId);
-            if (!sale) return;
-            let text = `*RECORDATORIO - PASTAS DECOR*\n\n👤 *Cliente:* ${sale.customer}\n🛒 *Detalle:* ${sale.items}\n💰 *Monto:* $${sale.total.toLocaleString()}\n\nHola ${sale.customer}, nos comunicamos por tu pedido. ¡Muchas gracias!`;
-            window.open(`https://wa.me/5492364351764?text=${encodeURIComponent(text)}`, '_blank');
+            if (!sale || !sale.phone) {
+                alert("Este pedido no tiene un número de celular registrado.");
+                return;
+            }
+
+            let cleanPhone = sale.phone.replace(/\D/g, '');
+            if (cleanPhone.length === 10) cleanPhone = '549' + cleanPhone;
+
+            let text = `Hola ${sale.customer}, nos comunicamos desde Pastas Decor por tu pedido. ¡Muchas gracias!`;
+            window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`, '_blank');
         }
 
         function addCashMovement(e) {
@@ -924,6 +938,7 @@
                         <tr class="hover:bg-slate-50 text-xs">
                             <td class="p-3">
                                 <span class="font-bold text-slate-900 block cursor-pointer hover:text-emerald-600" onclick="openOrderDetail(${s.id})">${s.customer} 🔍</span>
+                                <span class="text-emerald-700 font-semibold text-[11px] block">📱 ${s.phone || 'Sin tel'}</span>
                                 <span class="text-slate-400 text-[10px]">${s.date}</span>
                             </td>
                             <td class="p-3 text-slate-600 max-w-xs truncate cursor-pointer hover:text-slate-900" onclick="openOrderDetail(${s.id})">${s.items}</td>
