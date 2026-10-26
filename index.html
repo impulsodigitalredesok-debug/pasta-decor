@@ -114,8 +114,8 @@
                     <input type="text" id="cust-name" required placeholder="Ej. María González" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Celular / WhatsApp</label>
-                    <input type="tel" id="cust-phone" required placeholder="Ej. 2364123456" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Celular / WhatsApp (10 dígitos sin 0 ni 15)</label>
+                    <input type="text" id="cust-phone" required pattern="[0-9]{10}" maxlength="10" title="Ingresá exactamente 10 números (ej. 2364123456)" placeholder="Ej. 2364123456" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Forma de Pago</label>
@@ -656,7 +656,7 @@
             document.getElementById('cart-modal').classList.toggle('hidden');
         }
 
-        // PROCESAR CHECKOUT CON NOMBRE Y CELULAR
+        // PROCESAR CHECKOUT CON VALIDACIÓN DE 10 DÍGITOS
         function processCheckout(e) {
             e.preventDefault();
             if (cart.length === 0) {
@@ -664,8 +664,15 @@
                 return;
             }
 
-            const name = document.getElementById('cust-name').value;
-            const phone = document.getElementById('cust-phone').value;
+            const name = document.getElementById('cust-name').value.trim();
+            const phone = document.getElementById('cust-phone').value.trim();
+            
+            // Validación estricta de 10 dígitos numéricos
+            if (!/^\d{10}$/.test(phone)) {
+                alert("Por favor, ingresá un número de celular válido de 10 dígitos (ej. 2364123456).");
+                return;
+            }
+
             const payment = document.getElementById('cust-payment').value;
             let total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
@@ -752,19 +759,24 @@
             document.getElementById('order-detail-modal').classList.add('hidden');
         }
 
-        function sendWhatsAppToCustomerFromModal() {
-            if (!currentSelectedSaleId) return;
-            const sale = sales.find(s => s.id === currentSelectedSaleId);
-            if (!sale || !sale.phone) {
+        // FUNCIÓN PARA ABRIR WHATSAPP DIRECTAMENTE DESDE EL ADMIN AL TOCAR EL CELULAR
+        function openWhatsAppChat(phone, customerName) {
+            if (!phone) {
                 alert("Este pedido no tiene un número de celular registrado.");
                 return;
             }
+            let cleanPhone = phone.replace(/\D/g, '');
+            if (cleanPhone.length === 10) cleanPhone = '549' + cleanPhone; // Agrega prefijo 549 para Argentina
 
-            let cleanPhone = sale.phone.replace(/\D/g, '');
-            if (cleanPhone.length === 10) cleanPhone = '549' + cleanPhone;
-
-            let text = `Hola ${sale.customer}, nos comunicamos desde Pastas Decor por tu pedido. ¡Muchas gracias!`;
+            let text = `Hola ${customerName}, nos comunicamos desde Pastas Decor por tu pedido. ¡Muchas gracias!`;
             window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        function sendWhatsAppToCustomerFromModal() {
+            if (!currentSelectedSaleId) return;
+            const sale = sales.find(s => s.id === currentSelectedSaleId);
+            if (!sale) return;
+            openWhatsAppChat(sale.phone, sale.customer);
         }
 
         function addCashMovement(e) {
@@ -938,7 +950,7 @@
                         <tr class="hover:bg-slate-50 text-xs">
                             <td class="p-3">
                                 <span class="font-bold text-slate-900 block cursor-pointer hover:text-emerald-600" onclick="openOrderDetail(${s.id})">${s.customer} 🔍</span>
-                                <span class="text-emerald-700 font-semibold text-[11px] block">📱 ${s.phone || 'Sin tel'}</span>
+                                <span class="text-emerald-700 font-semibold text-[11px] block cursor-pointer hover:underline" onclick="openWhatsApp('${s.phone}', '${s.customer}')">📱 ${s.phone || 'Sin tel'} 💬</span>
                                 <span class="text-slate-400 text-[10px]">${s.date}</span>
                             </td>
                             <td class="p-3 text-slate-600 max-w-xs truncate cursor-pointer hover:text-slate-900" onclick="openOrderDetail(${s.id})">${s.items}</td>
@@ -984,6 +996,11 @@
                     `;
                 });
             }
+        }
+
+        // Función corta para invocar desde la tabla principal del admin
+        function openWhatsApp(phone, customerName) {
+            openWhatsAppChat(phone, customerName);
         }
 
         function toggleDeliveryStatus(id) {
