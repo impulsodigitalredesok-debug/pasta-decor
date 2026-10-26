@@ -136,20 +136,26 @@
                 </div>
 
                 <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl transition shadow cursor-pointer flex items-center justify-center gap-2 text-sm">
-                    <span>CONFIRMAR PEDIDO Y ENVIAR POR WHATSAPP</span>
+                    <span>CONFIRMAR PEDIDO</span>
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- MODAL TURNO CONFIRMADO -->
+    <!-- MODAL CARTEL DE CONFIRMACIÓN CON OPCIONES PARA EL CLIENTE -->
     <div id="success-modal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl space-y-4">
             <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-4xl mx-auto shadow-inner">🎉</div>
-            <h3 class="text-2xl font-black text-slate-900">¡Pedido Registrado!</h3>
-            <p class="text-slate-600 text-sm">Tu pedido se guardó con éxito en el sistema. Te estamos redirigiendo a WhatsApp para enviarlo.</p>
-            <div class="pt-2">
-                <span class="text-xs text-slate-400 animate-pulse">Abriendo WhatsApp en unos segundos...</span>
+            <h3 class="text-2xl font-black text-slate-900">¡Pedido Registrado con Éxito!</h3>
+            <p class="text-slate-600 text-sm">Tu pedido se guardó correctamente. Elegí una opción para continuar:</p>
+            
+            <div class="space-y-2 pt-2">
+                <button onclick="sendPendingWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-xs transition cursor-pointer flex items-center justify-center gap-2 shadow">
+                    <span>💬 ENVIAR DETALLE POR WHATSAPP</span>
+                </button>
+                <button onclick="closeSuccessModal()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-xs transition cursor-pointer">
+                    ✕ Cerrar y volver a la app
+                </button>
             </div>
         </div>
     </div>
@@ -383,12 +389,13 @@
     <!-- SCRIPT -->
     <script>
         const ADMIN_PASSWORD = "8266";
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxVJ_c32fkrurA4QJhgwBVjlnGgJLgQofSOg2vkWb9Nq8PwUx1pvyIYxEyVxJBqVNjhgw/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw_PFSfve6VS_TZ0IzXxvH_x4_9SGTjZkbfWhaVfMLPTxZw7IddVoO2sUIxRZ8RSyofxg/exec";
 
         let deferredPrompt;
         const banner = document.getElementById('pwa-install-banner');
         const installBtn = document.getElementById('btn-pwa-install');
         let currentSelectedSaleId = null;
+        let pendingWhatsAppUrl = "";
 
         window.addEventListener('load', () => {
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
@@ -421,7 +428,7 @@
             { id: 3, name: "Paquete 500g Color Blanco", price: 4200, stock: 20, category: "500g", desc: "Formato 500g.", image: "blancom.jpg" },
             { id: 4, name: "Paquete 500g Pasta de Goma Blanca", price: 4900, stock: 12, category: "goma", desc: "Ideal para flores.", image: "pasta de goma.jpg" },
             { id: 5, name: "Paquete 500g Color NEGRO", price: 4900, stock: 8, category: "color", desc: "Negro intenso.", image: "negro.jpg" },
-            { id: 6, name: "Paquete 500g Color ROJO", price: 4900, stock: 8, category: "rojo radiante.", image: "rojo.jpg" },
+            { id: 6, name: "Paquete 500g Color ROJO", price: 4900, stock: 8, category: "color", desc: "Rojo radiante.", image: "rojo.jpg" },
             { id: 7, name: "Paquete 500g Color AZUL", price: 4900, stock: 8, category: "color", desc: "Azul intenso.", image: "azul.jpg" },
             { id: 8, name: "Paquete 500g Color VIOLETA", price: 4900, stock: 8, category: "color", desc: "Violeta.", image: "azul.jpg" },
             { id: 9, name: "Paquete 500g Color AMARILLO", price: 4900, stock: 8, category: "color", desc: "Amarillo.", image: "amarillo.jpg" },
@@ -644,6 +651,7 @@
             document.getElementById('cart-modal').classList.toggle('hidden');
         }
 
+        // PROCESAR CHECKOUT CON OPCIONES EN EL MODAL DE ÉXITO
         function processCheckout(e) {
             e.preventDefault();
             if (cart.length === 0) {
@@ -677,7 +685,7 @@
             renderProducts();
 
             let text = `*NUEVO PEDIDO PASTAS DECOR*\n\n👤 *Cliente:* ${name}\n💳 *Pago:* ${payment}\n🛒 *Detalle:* ${newSale.items}\n\n💰 *TOTAL:* $${total.toLocaleString()}`;
-            const waUrl = `https://wa.me/5492364351764?text=${encodeURIComponent(text)}`;
+            pendingWhatsAppUrl = `https://wa.me/5492364351764?text=${encodeURIComponent(text)}`;
 
             toggleCart();
             document.getElementById('checkout-form').reset();
@@ -685,13 +693,20 @@
             cart = [];
             updateCartUI();
 
+            // Mostrar modal con opción de enviar o cerrar
             document.getElementById('success-modal').classList.remove('hidden');
+        }
 
-            setTimeout(() => {
-                document.getElementById('success-modal').classList.add('hidden');
-                window.open(waUrl, '_blank');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }, 2500);
+        function sendPendingWhatsApp() {
+            if (pendingWhatsAppUrl) {
+                window.open(pendingWhatsAppUrl, '_blank');
+            }
+            closeSuccessModal();
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('success-modal').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function openOrderDetail(id) {
@@ -768,13 +783,11 @@
             }
         }
 
-        // ELIMINAR PEDIDO Y RESTITUIR STOCK AUTOMÁTICAMENTE
         function deleteSale(id) {
             const saleToDelete = sales.find(s => s.id === id);
             if (!saleToDelete) return;
 
             if (confirm(`¿Borrar el pedido de ${saleToDelete.customer}? Los productos volverán al stock.`)) {
-                // Devolver stock analizando el texto de ítems (ej. "2x Paquete 500g Color ROJO")
                 const itemsStr = saleToDelete.items;
                 const lines = itemsStr.split(',');
                 
@@ -844,14 +857,12 @@
             renderAdminData();
         }
 
-        // FILTRO GLOBAL DESDE LAS TARJETAS SUPERIORES (FUNCIONA DESDE CUALQUIER SOLAPA)
         function filterSalesStatusGlobal(status) {
             switchAdminTab('sales');
             filterSalesStatus(status);
         }
 
         function renderAdminData() {
-            // STOCK
             const stockBody = document.getElementById('admin-stock-list');
             stockBody.innerHTML = '';
             let totalValuation = 0;
@@ -872,7 +883,6 @@
             });
             document.getElementById('admin-total-valuation').innerText = '$' + totalValuation.toLocaleString();
 
-            // VENTAS Y MOVIMIENTOS
             const salesBody = document.getElementById('admin-sales-list');
             const movementsBody = document.getElementById('admin-movements-list');
             salesBody.innerHTML = '';
@@ -928,9 +938,8 @@
                                 </button>
                             </td>
                             <td class="p-3 font-bold text-slate-900">$${s.total.toLocaleString()}</td>
-                            <td class="p-3 text-right space-x-1">
-                                <button onclick="openOrderDetail(${s.id})" class="px-2.5 py-1 bg-sky-50 text-sky-700 font-bold border border-sky-200 rounded-lg hover:bg-sky-100 cursor-pointer" title="Ver Detalle">👁 Ver</button>
-                                <button onclick="deleteSale(${s.id})" class="px-2 py-1 text-slate-400 hover:text-rose-600 font-bold cursor-pointer" title="Borrar y devolver stock">🗑</button>
+                            <td class="p-3 text-right">
+                                <button onclick="deleteSale(${s.id})" class="px-2.5 py-1 text-slate-400 hover:text-rose-600 font-bold cursor-pointer" title="Borrar y devolver stock">🗑</button>
                             </td>
                         </tr>
                     `;
@@ -980,7 +989,7 @@
                     const newPay = s.paymentStatus === 'pendiente' ? 'cobrado' : 'pendiente';
                     return { ...s, paymentStatus: newPay };
                 }
-                return s.paymentStatus;
+                return s;
             });
             saveToCloud();
             renderAdminData();
