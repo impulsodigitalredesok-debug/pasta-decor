@@ -175,10 +175,37 @@
                     <p class="text-xs text-slate-500">Suma total de ítems en pedidos pendientes de entrega</p>
                 </div>
             </div>
-            <div id="prep-summary-content" class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2 text-sm divide-y divide-slate-100">
-                <!-- Se llena por JS -->
-            </div>
+            <div id="prep-summary-content" class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2 text-sm divide-y divide-slate-100"></div>
             <button onclick="closePrepSummary()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-xl text-xs transition cursor-pointer">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- MODAL PROGRAMAR RECORDATORIO DE ENTREGA -->
+    <div id="reminder-modal" class="fixed inset-0 z-[70] bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl relative space-y-4">
+            <button onclick="closeReminderModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 font-bold cursor-pointer text-lg">✕</button>
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-xl bg-amber-100 text-amber-700">⏰</div>
+                <div>
+                    <h3 class="text-base font-extrabold text-slate-900">Programar Entrega</h3>
+                    <p class="text-xs text-slate-500" id="reminder-customer-name"></p>
+                </div>
+            </div>
+            <form onsubmit="saveDeliveryReminder(event)" class="space-y-3">
+                <input type="hidden" id="reminder-order-id">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Fecha de Entrega</label>
+                    <input type="date" id="reminder-date" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Horario (Ej: 14:00)</label>
+                    <input type="text" id="reminder-time" required placeholder="Ej. 14:00" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                </div>
+                <div class="pt-2 flex gap-2">
+                    <button type="submit" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs transition cursor-pointer">Guardar Alarma y Avisar</button>
+                    <button type="button" onclick="closeReminderModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-2.5 rounded-xl text-xs transition cursor-pointer">Cancelar</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -233,6 +260,9 @@
                 <div>
                     <span class="text-[11px] text-slate-400 uppercase font-bold block">Productos / Ítems</span>
                     <span id="detail-items" class="text-slate-700 font-medium block bg-white p-2.5 rounded-xl border border-slate-100"></span>
+                </div>
+                <div id="detail-reminder-box" class="hidden bg-amber-50 border border-amber-200 p-2.5 rounded-xl text-xs text-amber-900 font-semibold">
+                    ⏰ Entrega programada: <span id="detail-reminder-text"></span>
                 </div>
                 <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200">
                     <div>
@@ -319,11 +349,9 @@
                     </div>
 
                     <div class="flex items-center gap-2">
-                        <!-- Filtro de fecha -->
                         <input type="date" id="sales-date-filter" onchange="renderAdminData()" class="bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-700">
                         <button onclick="clearDateFilter()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold px-2.5 py-1.5 rounded-xl cursor-pointer" title="Borrar filtro de fecha">✕ Fecha</button>
                         
-                        <!-- Botón Resumen de Preparación -->
                         <button onclick="openPrepSummary()" class="bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition cursor-pointer flex items-center gap-1 shadow-sm">
                             <span>📦 Ver Qué Preparar</span>
                         </button>
@@ -452,7 +480,7 @@
     <!-- SCRIPT -->
     <script>
         const ADMIN_PASSWORD = "8266";
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw_PFSfve6VS_TZ0IzXxvH_x4_9SGTjZkbfWhaVfMLPTxZw7IddVoO2sUIxRZ8RSyofxg/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxkiyaZm3p7ddvz4KDjgHmHmPcdq_kt92kb99GrYAn0a5DIZnnRPm5pey4MaK_4noQDYg/exec";
 
         let deferredPrompt;
         const banner = document.getElementById('pwa-install-banner');
@@ -747,7 +775,8 @@
                 phone: phone,
                 payment: payment,
                 total: total,
-                items: cart.map(i => `${i.quantity}x ${i.name}`).join(', ')
+                items: cart.map(i => `${i.quantity}x ${i.name}`).join(', '),
+                reminder: null
             };
 
             sales.unshift(newSale);
@@ -790,6 +819,15 @@
             document.getElementById('detail-items').innerText = sale.items;
             document.getElementById('detail-total').innerText = '$' + sale.total.toLocaleString();
 
+            const reminderBox = document.getElementById('detail-reminder-box');
+            const reminderText = document.getElementById('detail-reminder-text');
+            if (sale.reminder) {
+                reminderText.innerText = sale.reminder;
+                reminderBox.classList.remove('hidden');
+            } else {
+                reminderBox.classList.add('hidden');
+            }
+
             const delEl = document.getElementById('detail-del-status');
             if (sale.deliveryStatus === 'pendiente') {
                 delEl.className = "inline-block px-2.5 py-1 rounded-lg font-bold text-xs mt-1 bg-amber-100 text-amber-900 border border-amber-300";
@@ -815,12 +853,69 @@
             document.getElementById('order-detail-modal').classList.add('hidden');
         }
 
+        // RECORDATORIO DE ENTREGA (CALENDAR + WHATSAPP)
+        function openReminderModal(id) {
+            const sale = sales.find(s => s.id === id);
+            if (!sale) return;
+
+            document.getElementById('reminder-order-id').value = sale.id;
+            document.getElementById('reminder-customer-name').innerText = `Cliente: ${sale.customer}`;
+            document.getElementById('reminder-date').value = '';
+            document.getElementById('reminder-time').value = '';
+
+            document.getElementById('reminder-modal').classList.remove('hidden');
+        }
+
+        function closeReminderModal() {
+            document.getElementById('reminder-modal').classList.add('hidden');
+        }
+
+        function saveDeliveryReminder(e) {
+            e.preventDefault();
+            const id = parseInt(document.getElementById('reminder-order-id').value);
+            const dateInput = document.getElementById('reminder-date').value; // yyyy-mm-dd
+            const timeInput = document.getElementById('reminder-time').value.trim();
+
+            const parts = dateInput.split('-'); // [yyyy, mm, dd]
+            const formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            const reminderStr = `${formattedDate} a las ${timeInput} hs`;
+
+            const sale = sales.find(s => s.id === id);
+            if (!sale) return;
+
+            sales = sales.map(s => {
+                if (s.id === id) {
+                    return { ...s, reminder: reminderStr };
+                }
+                return s;
+            });
+
+            saveToCloud();
+            renderAdminData();
+            closeReminderModal();
+
+            // 1. Abrir Google Calendar automáticamente para programar la alarma nativa en el celular
+            const isoDate = dateInput.replace(/-/g, '');
+            const cleanTime = timeInput.replace(/\D/g, '').padStart(4, '0');
+            const startTime = `${isoDate}T${cleanTime}00`;
+            const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Entrega Pastas Decor: ' + sale.customer)}&dates=${startTime}/${startTime}&details=${encodeURIComponent('Pedido: ' + sale.items + ' - Tel: ' + sale.phone)}&location=${encodeURIComponent('Junín')}`;
+            
+            window.open(calendarUrl, '_blank');
+
+            // 2. Preguntar si también querés enviar el WhatsApp al cliente
+            if (confirm("¡Alarma agendada en Google Calendar!\n\n¿Querés enviarle además el aviso de entrega por WhatsApp al cliente ahora?")) {
+                let cleanPhone = sale.phone.replace(/\D/g, '');
+                if (cleanPhone.length === 10) cleanPhone = '549' + cleanPhone;
+                let text = `¡Hola ${sale.customer}! Nos comunicamos de Pastas Decor para confirmarte que tu pedido quedó programado para ser entregado el *${reminderStr}*. ¡Muchas gracias! 🎂✨`;
+                window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`, '_blank');
+            }
+        }
+
         // RESUMEN DE MERCADERÍA A PREPARAR
         function openPrepSummary() {
             const summaryContent = document.getElementById('prep-summary-content');
             summaryContent.innerHTML = '';
 
-            // Agrupar ítems de pedidos con entrega pendiente
             let itemTotals = {};
             sales.forEach(s => {
                 if (s.deliveryStatus === 'pendiente') {
@@ -1077,21 +1172,17 @@
             document.getElementById('admin-pending-payment-val').innerText = '$' + pendingPaymentVal.toLocaleString();
             document.getElementById('admin-pending-delivery-count').innerText = pendingDeliveryCount;
 
-            // Filtro por fecha seleccionada y por estado
-            const selectedDateInput = document.getElementById('sales-date-filter').value; // formato yyyy-mm-dd
+            const selectedDateInput = document.getElementById('sales-date-filter').value;
 
             const filteredSales = sales.filter(s => {
-                // Filtro de estado
                 let matchesStatus = true;
                 if (currentSalesStatusFilter === 'p_entrega') matchesStatus = s.deliveryStatus === 'pendiente';
                 else if (currentSalesStatusFilter === 'p_cobro') matchesStatus = s.paymentStatus === 'pendiente';
                 else if (currentSalesStatusFilter === 'completado') matchesStatus = s.deliveryStatus === 'entregado' && s.paymentStatus === 'cobrado';
 
-                // Filtro de fecha
                 let matchesDate = true;
                 if (selectedDateInput) {
-                    // s.date tiene formato "dd/mm/yyyy, hh:mm:ss" (es-AR)
-                    const parts = s.date.split(',')[0].split('/'); // [dd, mm, yyyy]
+                    const parts = s.date.split(',')[0].split('/');
                     if (parts.length === 3) {
                         const saleFormattedDate = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
                         matchesDate = (saleFormattedDate === selectedDateInput);
@@ -1110,12 +1201,23 @@
                     const isDeliveryPending = s.deliveryStatus === 'pendiente';
                     const isPaymentPending = s.paymentStatus === 'pendiente';
 
+                    let reminderBadge = '';
+                    if (s.reminder) {
+                        reminderBadge = `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-md block mt-1">⏰ Alarma: ${s.reminder}</span>`;
+                    }
+
+                    let reminderBtnHtml = '';
+                    if (isDeliveryPending) {
+                        reminderBtnHtml = `<button onclick="openReminderModal(${s.id})" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-lg font-bold cursor-pointer transition" title="Programar recordatorio / alarma de entrega">⏰</button>`;
+                    }
+
                     salesBody.innerHTML += `
                         <tr class="hover:bg-slate-50 text-xs">
                             <td class="p-3">
                                 <span class="font-bold text-slate-900 block cursor-pointer hover:text-emerald-600" onclick="openOrderDetail(${s.id})">${s.customer} 🔍</span>
                                 <span class="text-emerald-700 font-semibold text-[11px] block cursor-pointer hover:underline" onclick="openWhatsApp('${s.phone}', '${s.customer}')">📱 ${s.phone || 'Sin tel'} 💬</span>
                                 <span class="text-slate-400 text-[10px]">${s.date}</span>
+                                ${reminderBadge}
                             </td>
                             <td class="p-3 text-slate-600 max-w-xs truncate cursor-pointer hover:text-slate-900" onclick="openOrderDetail(${s.id})">${s.items}</td>
                             <td class="p-3">
@@ -1130,6 +1232,7 @@
                             </td>
                             <td class="p-3 font-bold text-slate-900">$${s.total.toLocaleString()}</td>
                             <td class="p-3 text-right space-x-1">
+                                ${reminderBtnHtml}
                                 <button onclick="openEditModal(${s.id})" class="px-2.5 py-1 text-slate-400 hover:text-sky-600 font-bold cursor-pointer" title="Editar pedido">✏️</button>
                                 <button onclick="deleteSale(${s.id})" class="px-2.5 py-1 text-slate-400 hover:text-rose-600 font-bold cursor-pointer" title="Borrar y devolver stock">🗑</button>
                             </td>
@@ -1239,4 +1342,4 @@
         renderProducts();
     </script>
 </body>
-    </html>
+</html>
